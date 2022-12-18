@@ -5,5 +5,6 @@
   tasks:
     - name: "Installing packages from pacman"
       pacman:
-        name: "{{pacman_packages | join(' ')}}"
+        name: "{{pacman_packages | join(',')}}"
         state: present
+        update_cache: yes
