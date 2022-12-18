@@ -13,8 +13,8 @@
       loop: "{{locales}}"
       lineinfile:
         path: /etc/locale.gen
-        regexp: "#({{item}}.*)"
-        line: '\2'
+        regexp: '#({{item}}.*)$'
+        line: '\1'
         backrefs: true
     - name: "Generate locales"
       command:
