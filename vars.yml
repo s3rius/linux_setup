@@ -4,10 +4,12 @@ locales:
   - en_US.UTF-8
   - ru_RU.UTF-8
 username: s3rius
-groups:
+new_groups:
   - s3rius
   - docker
   - sudo
+efi_mountpoint: /boot/EFI
+bootloader_id: I Use Arch BTW
 
 pacman_packages:
   - acpi

@@ -11,9 +11,11 @@
     - name: Setting up timezone
       command:
         cmd: "ln -sf /usr/share/zoneinfo/{{timezone}} /etc/localtime"
+
     - name: Adjusting time
       command:
         cmd: "hwclock --systohc"
+
     - name: Updating locales file
       loop: "{{locales}}"
       lineinfile:
@@ -21,37 +23,59 @@
         regexp: "#({{item}}.*)$"
         line: '\1'
         backrefs: true
+
     - name: Generate locales
       command:
         cmd: locale-gen
+
     - name: "Create locale file"
       copy:
         dest: /etc/locale.conf
         content: |
           LANG={{locales[0]}}
+
     - name: Add hostname
       copy:
         dest: /etc/hostname
         content: |
           {{hostname}}
+
     - name: Update hosts
       copy:
         dest: /etc/hosts
         content: |
           127.0.0.1   localhost
           ::1         localhost
+
     - name: Create boot image
       command:
         cmd: mkinitcpio -P
+
     - name: Set root password
       user:
         name: "root"
         state: "present"
         password: "{{ root_passwd | password_hash('sha512') }}"
+
+    - name: Create groups
+      loop: "{{new_groups}}"
+      group:
+        name: "{{item}}"
+
     - name: Create user
       user:
         name: "{{username}}"
         create_home: true
-        groups: "{{groups}}"
+        groups: "{{ new_groups | join(',') }}"
         password: "{{ usr_passwd | password_hash('sha512') }}"
         shell: /bin/zsh
+
+    - name: Install grub
+      pacman:
+        name: "grub,efibootmgr"
+        state: present
+        update_cache: yes
+
+    - name: Configure grub
+      command:
+        cmd: 'grub-install --target=x86_64-efi --efi-directory={{efi_mountpoint}} --bootloader-id="{{bootloader_id}}"'
