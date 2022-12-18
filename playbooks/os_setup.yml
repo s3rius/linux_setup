@@ -4,15 +4,23 @@
     - "../vars.yml"
   tasks:
     - name: "Setting up time"
-      ansible.builtin.command:
+      command:
         cmd: "ln -sf /usr/share/zoneinfo/{{timezone}} /etc/localtime"
     - name: "Adjusting time"
-      ansible.builtin.command:
+      command:
         cmd: "hwclock --systohc"
     - name: "Updating locales file"
       loop: "{{locales}}"
-      ansible.builtin.lineinfile:
+      lineinfile:
         path: /etc/locale.gen
-        regexp: "#({{item}} .*)"
+        regexp: "#({{item}}.*)"
         line: '\1'
         backrefs: true
+    - name: "Generate locales"
+      command:
+        cmd: locale-gen
+    - name: "Create locale file"
+      copy:
+        dest: /etc/locale.conf
+        content: |
+          LANG={{locales[0]}}
