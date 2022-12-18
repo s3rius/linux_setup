@@ -5,4 +5,5 @@
   tasks:
     - name: "Installing packages from pacman"
       pacman:
-        name: "{{pacman_packages}}"
+        name: "{{pacman_packages | join(' ')}}"
+        state: present

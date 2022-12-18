@@ -4,6 +4,10 @@ locales:
   - en_US.UTF-8
   - ru_RU.UTF-8
 username: s3rius
+groups:
+  - s3rius
+  - docker
+  - sudo
 
 pacman_packages:
   - acpi
