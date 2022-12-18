@@ -14,7 +14,7 @@
       lineinfile:
         path: /etc/locale.gen
         regexp: "#({{item}}.*)"
-        line: '\1'
+        line: '\2'
         backrefs: true
     - name: "Generate locales"
       command:
