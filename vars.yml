@@ -3,6 +3,7 @@ hostname: s3rius-pc
 locales:
   - en_US.UTF-8
   - ru_RU.UTF-8
+username: s3rius
 
 pacman_packages:
   - acpi
@@ -30,6 +31,7 @@ pacman_packages:
   - pygobject-devel
   - ranger
   - shellcheck
+  - sudo
   - ttf-fira-code
   - ttf-font-awesome
   - ttf-ubuntu-font-family

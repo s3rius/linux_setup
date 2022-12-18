@@ -2,21 +2,27 @@
   hosts: local
   vars_files:
     - "../vars.yml"
+  vars_prompt:
+    - name: root_passwd
+      prompt: Root password
+    - name: usr_passwd
+      prompt: User password
+
   tasks:
-    - name: "Setting up time"
+    - name: Setting up timezone
       command:
         cmd: "ln -sf /usr/share/zoneinfo/{{timezone}} /etc/localtime"
-    - name: "Adjusting time"
+    - name: Adjusting time
       command:
         cmd: "hwclock --systohc"
-    - name: "Updating locales file"
+    - name: Updating locales file
       loop: "{{locales}}"
       lineinfile:
         path: /etc/locale.gen
-        regexp: '#({{item}}.*)$'
+        regexp: "#({{item}}.*)$"
         line: '\1'
         backrefs: true
-    - name: "Generate locales"
+    - name: Generate locales
       command:
         cmd: locale-gen
     - name: "Create locale file"
@@ -24,3 +30,32 @@
         dest: /etc/locale.conf
         content: |
           LANG={{locales[0]}}
+    - name: Add hostname
+      copy:
+        dest: /etc/hostname
+        content: |
+          {{hostname}}
+    - name: Update hosts
+      copy:
+        dest: /etc/hosts
+        content: |
+          127.0.0.1   localhost
+          ::1         localhost
+    - name: Create boot image
+      command:
+        cmd: mkinitcpio -P
+    - name: Set root password
+      user:
+        name: "root"
+        state: "present"
+        password: "{{ root_passwd | password_hash('sha512') }}"
+    - name: Create user
+      user:
+        name: "{{username}}"
+        create_home: true
+        groups:
+          - "{{username}}"
+          - sudo
+          - docker
+        password: "{{ usr_passwd | password_hash('sha512') }}"
+        shell: /bin/zsh

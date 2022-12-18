@@ -4,5 +4,5 @@
     - "../vars.yml"
   tasks:
     - name: "Installing packages from pacman"
-      ansible.builtin.command:
-        cmd: "pacman -Syu --noconfirm --needed {{pacman_packages | join(' ')}}"
+      pacman:
+        name: "{{pacman_packages}}"
