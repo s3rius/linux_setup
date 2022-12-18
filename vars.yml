@@ -1,0 +1,56 @@
+pacman_packages:
+  - acpi
+  - alsa-utils
+  - asp
+  - base-devel
+  - bat
+  - community/kitty
+  - community/starship
+  - dmenu
+  - firefox
+  - gnome-keyring
+  - gobject-introspection
+  - kubectl
+  - lazygit
+  - libldac
+  - libsecret
+  - lsd
+  - maim
+  - nitrogen
+  - opendesktop-fonts
+  - noto-fonts-emoji
+  - picom
+  - playerctl
+  - pygobject-devel
+  - ranger
+  - shellcheck
+  - ttf-fira-code
+  - ttf-font-awesome
+  - ttf-ubuntu-font-family
+  - unclutter
+  - vim
+  - xclip
+  - xdg-utils
+  - xorg
+  - xorg-xclock
+  - xorg-xinit
+  - xterm
+  - zsh
+  - zsh-autosuggestions
+  - zsh-syntax-highlighting
+
+custom_packgaes:
+  - git_url: https://github.com/robbyrussell/oh-my-zsh.git
+    build_command: sh ./tools/install.sh
+  - git_url: https://github.com/actionless/pikaur.git
+    build_command: makepkg -fsri
+  - git_url: https://gitlab.le-memese.com/s3rius/awatch.git
+    build_command: makepkg -fsri
+
+pikaur_deps:
+  - autojump
+  - avizo
+  - lightdm-webkit-theme-aether
+  - ttf-symbola
+  - ttf-ubraille
+  - visual-studio-code-bin
