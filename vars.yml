@@ -1,3 +1,8 @@
+timezone: Europe/Samara
+locales:
+  - en_US.UTF8
+  - ru_RU.UTF8
+
 pacman_packages:
   - acpi
   - alsa-utils

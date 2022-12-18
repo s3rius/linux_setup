@@ -1,2 +1,3 @@
 ---
+- import_playbook: playbooks/os_setup.yml
 - import_playbook: playbooks/install_packages.yml
