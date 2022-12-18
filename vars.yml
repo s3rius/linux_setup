@@ -1,9 +1,9 @@
 timezone: Europe/Samara
 hostname: s3rius-pc
+username: s3rius
 locales:
   - en_US.UTF-8
   - ru_RU.UTF-8
-username: s3rius
 new_groups:
   - s3rius
   - docker
