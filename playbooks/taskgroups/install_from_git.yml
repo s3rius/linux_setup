@@ -1,0 +1,14 @@
+---
+- name: Clone repo
+  git:
+    repo: "{{item['git_url']}}"
+    clone: true
+    dest: "/tmp/build"
+- name: Build app
+  command:
+    chdir: /tmp/build
+    cmd: "{{item['build_command']}}"
+- name: Remove build directory
+  file:
+    path: /tmp/build
+    state: absent

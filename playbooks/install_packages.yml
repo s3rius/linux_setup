@@ -8,3 +8,6 @@
         name: "{{pacman_packages | join(',')}}"
         state: present
         update_cache: yes
+    - name: "Install packages from source"
+      loop: "{{custom_packgaes}}"
+      include_tasks: taskgroups/install_from_git.yml

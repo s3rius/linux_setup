@@ -1,0 +1,14 @@
+#!/bin/zsh
+zparseopts -E -A opts -port:: -name::
+
+dargs=(
+    "--rm"
+    "-d"
+    "-p="${opts[--port]:-6379}:6379""
+)
+
+if [[ -v opts[--name] ]]; then
+    dargs+="--name=${opts[--name]}"
+fi
+
+docker run ${dargs[*]} redis

@@ -83,3 +83,14 @@
     - name: Create grub-config
       command:
         cmd: grub-mkconfig -o /boot/grub/grub.cfg
+
+    - name: Install network manager
+      pacman:
+        name: networkmanager
+        state: present
+        update_cache: yes
+
+    - name: Setting up NetworkManager service
+      service:
+        name: NetworkManager.service
+        enabled: true

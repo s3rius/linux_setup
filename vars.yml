@@ -68,3 +68,7 @@ pikaur_deps:
   - ttf-symbola
   - ttf-ubraille
   - visual-studio-code-bin
+
+dotenv_files:
+  - source: ./dotfiles/.zshrc
+    dest: "$HOME/.zshrc"

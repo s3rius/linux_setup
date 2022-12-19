@@ -1,0 +1,16 @@
+#!/bin/zsh
+zparseopts -E -A opts -user:: -pass:: -port:: --name::
+
+port="${opts[--port]:-5672}"
+
+
+docker run \
+    --rm \
+    -it \
+    -d \
+    -p "${port}:5672" \
+    -p "1${port}:15672" \
+    --env "RABBITMQ_DEFAULT_USER=${opts[--user]:-guest}" \
+    --env "RABBITMQ_DEFAULT_PASS=${opts[--pass]:-guest}" \
+    --env "RABBITMQ_DEFAULT_VHOST=/" \
+    rabbitmq:3.8
