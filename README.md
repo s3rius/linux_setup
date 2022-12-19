@@ -40,9 +40,9 @@ pacman -S pyenv git vim
 # Enable pyenv
 eval "$(pyenv init -)"
 
-# Install python3.9.16
-pyenv install 3.9.16
-pyenv shell 3.9.16
+# Install python3.10.5
+pyenv install 3.10.5 # >= 3.10 is reqired for pikaur
+pyenv shell 3.10.5
 
 # Clone this repo
 git clone https://github.com/s3rius/linux_setup.git /tmp/linux_setup
