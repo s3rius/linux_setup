@@ -52,7 +52,7 @@ pacman_packages:
   - zsh-autosuggestions
   - zsh-syntax-highlighting
 
-custom_packgaes:
+custom_packages:
   - git_url: https://github.com/robbyrussell/oh-my-zsh.git
     build_command: sh ./tools/install.sh
   - git_url: https://github.com/actionless/pikaur.git
