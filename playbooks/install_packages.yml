@@ -3,16 +3,31 @@
   vars_files:
     - "../vars.yml"
   tasks:
-    - name: Install pikaur
+
+    - name: Setup Rust
+      block:
+        - name: Install rustup
+          pacman:
+            name: rustup
+            state: present
+            update_cache: yes
+        - name: Install stable toolchain
+          command:
+            cmd: rustup toolchain install stable
+        - name: Setting default toolchain
+          command:
+            cmd: rustup default stable
+
+    - name: Install AUR helper
       vars:
         item:
-          git_url: https://aur.archlinux.org/pikaur.git
+          git_url: https://aur.archlinux.org/paru.git
           build_command: yes | makepkg -fsri
       include_tasks: taskgroups/install_from_git.yml
 
     - name: "Install packages from AUR"
       command:
-        cmd: "pikaur -Syu --needed --noconfirm --noedit {{pikaur_deps | join(' ')}}"
+        cmd: "paru -Syu --needed --noconfirm {{aur_deps | join(' ')}}"
 
     - name: "Build packages from source"
       loop: "{{custom_packages}}"

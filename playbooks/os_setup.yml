@@ -72,15 +72,15 @@
       lineinfile:
         dest: /etc/sudoers
         state: present
-        regexp: "^%wheel"
-        line: "%wheel ALL=(ALL) NOPASSWD: ALL"
+        regexp: "^%sudo"
+        line: "%sudo ALL=(ALL) ALL"
         validate: visudo -cf %s
 
     - name: Create user
       user:
         name: "{{username}}"
         create_home: true
-        groups: "{{ new_groups | join(',') }},wheel"
+        groups: "{{ new_groups | join(',') }},sudo"
         password: "{{ usr_passwd | password_hash('sha512') }}"
         shell: /bin/zsh
 

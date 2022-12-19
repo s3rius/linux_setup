@@ -54,7 +54,7 @@ custom_packages:
   - git_url: https://gitlab.le-memese.com/s3rius/awatch.git
     build_command: yes | makepkg -fsri
 
-pikaur_deps:
+aur_deps:
   - autojump
   - avizo
   - ttf-symbola
