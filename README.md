@@ -35,28 +35,25 @@ I prefer using pyenv
 
 ```bash
 # Install packages
-pacman -S pyenv git vim
-
-# Enable pyenv
-eval "$(pyenv init -)"
-
-# Install python3.10.5
-pyenv install 3.10.5 # >= 3.10 is reqired for pikaur
-pyenv shell 3.10.5
+pacman -S python python-pip git vim
 
 # Clone this repo
 git clone https://github.com/s3rius/linux_setup.git /tmp/linux_setup
-mv /tmp/linux_setup
-python -m venv .venv
-source .venv/bin/activate
+cd /tmp/linux_setup
 pip install -r requirements.txt
 ```
 
 Now you need to update vars file according to your needs.
 After you're ready just enter
 
-```
-ansible-playbook -i inventory.ini playbook.yml
-```
+```bash
+ansible-playbook -i inventory.ini chroot_playbook.yml
 
-This will install everything you need and setup GRUB as default boot manager.
+# Reboot your system, log onto your new account
+# You can persist your config if you clone it to a different directory.
+git clone https://github.com/s3rius/linux_setup.git /tmp/linux_setup
+cd /tmp/linux_setup
+pip install -r requirements.txt
+# This is config for users.
+ansible-playbook -i inventory.ini user_playbook.yml
+```

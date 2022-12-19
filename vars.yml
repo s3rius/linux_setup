@@ -20,7 +20,6 @@ pacman_packages:
   - dmenu
   - firefox
   - gnome-keyring
-  - gobject-introspection
   - kubectl
   - lazygit
   - libldac
@@ -32,8 +31,6 @@ pacman_packages:
   - noto-fonts-emoji
   - picom
   - playerctl
-  - pygobject-devel
-  - ranger
   - shellcheck
   - sudo
   - ttf-fira-code
