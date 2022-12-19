@@ -5,7 +5,7 @@
     clone: true
     dest: "/tmp/build"
 - name: Build app
-  command:
+  shell:
     chdir: /tmp/build
     cmd: "{{item['build_command']}}"
 - name: Remove build directory

@@ -7,7 +7,7 @@
       vars:
         item:
           git_url: https://aur.archlinux.org/pikaur.git
-          build_command: makepkg -fsri
+          build_command: yes | makepkg -fsri
       include_tasks: taskgroups/install_from_git.yml
 
     - name: "Install packages from AUR"
