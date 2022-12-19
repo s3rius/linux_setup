@@ -10,7 +10,7 @@
   tasks:
     - name: "Installing packages from pacman"
       pacman:
-        name: "{{pacman_packages | join(',')}}"
+        name: "{{pacman_packages | join(',')}},sudo"
         state: present
         update_cache: yes
 
@@ -72,15 +72,15 @@
       lineinfile:
         dest: /etc/sudoers
         state: present
-        regexp: "^%sudo"
-        line: "%sudo ALL=(ALL) ALL"
+        regexp: "^%wheel"
+        line: "%wheel ALL=(ALL) ALL"
         validate: visudo -cf %s
 
     - name: Create user
       user:
         name: "{{username}}"
         create_home: true
-        groups: "{{ new_groups | join(',') }},sudo"
+        groups: "{{ new_groups | join(',') }},wheel"
         password: "{{ usr_passwd | password_hash('sha512') }}"
         shell: /bin/zsh
 

@@ -40,6 +40,8 @@ pacman -S python python-pip git vim
 # Clone this repo
 git clone https://github.com/s3rius/linux_setup.git /tmp/linux_setup
 cd /tmp/linux_setup
+python -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
