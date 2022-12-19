@@ -13,7 +13,6 @@ bootloader_id: I Use Arch BTW
 
 pacman_packages:
   - acpi
-  - alsa-utils
   - asp
   - base-devel
   - bat
@@ -64,7 +63,6 @@ custom_packgaes:
 pikaur_deps:
   - autojump
   - avizo
-  - lightdm-webkit-theme-aether
   - ttf-symbola
   - ttf-ubraille
   - visual-studio-code-bin

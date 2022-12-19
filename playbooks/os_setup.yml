@@ -8,6 +8,12 @@
     - name: usr_passwd
       prompt: User password
   tasks:
+    - name: "Installing packages from pacman"
+      pacman:
+        name: "{{pacman_packages | join(',')}}"
+        state: present
+        update_cache: yes
+
     - name: Setting up timezone
       command:
         cmd: "ln -sf /usr/share/zoneinfo/{{timezone}} /etc/localtime"
@@ -71,18 +77,7 @@
         shell: /bin/zsh
 
     - name: Install grub
-      pacman:
-        name: "grub,efibootmgr,os-prober"
-        state: present
-        update_cache: yes
-
-    - name: Configure grub
-      command:
-        cmd: 'grub-install --target=x86_64-efi --efi-directory={{efi_mountpoint}} --bootloader-id="{{bootloader_id}}"'
-
-    - name: Create grub-config
-      command:
-        cmd: grub-mkconfig -o /boot/grub/grub.cfg
+      include_tasks: taskgroups/install_grub.yml
 
     - name: Install network manager
       pacman:

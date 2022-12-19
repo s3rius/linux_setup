@@ -1,0 +1,14 @@
+---
+- name: Install grub
+  pacman:
+    name: "grub,efibootmgr,os-prober"
+    state: present
+    update_cache: yes
+
+- name: Configure grub
+  command:
+    cmd: 'grub-install --target=x86_64-efi --efi-directory={{efi_mountpoint}} --bootloader-id="{{bootloader_id}}"'
+
+- name: Create grub-config
+  command:
+    cmd: grub-mkconfig -o /boot/grub/grub.cfg

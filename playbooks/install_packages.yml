@@ -3,11 +3,8 @@
   vars_files:
     - "../vars.yml"
   tasks:
-    - name: "Installing packages from pacman"
-      pacman:
-        name: "{{pacman_packages | join(',')}}"
-        state: present
-        update_cache: yes
     - name: "Install packages from source"
       loop: "{{custom_packgaes}}"
       include_tasks: taskgroups/install_from_git.yml
+    - name: "Install packages from pikaur"
+      
