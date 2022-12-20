@@ -2,15 +2,27 @@
 - name: Install i3
   become: true
   pacman:
-    name: "i3wm,i3blocks"
+    name: "i3-wm,i3blocks"
     state: present
     update_cache: yes
+
+- name: Create dirs
+  loop:
+    - dest: "$HOME/.config/i3/config"
+    - dest: "$HOME/.config/i3blocks/config"
+    - dest: "$HOME/.picom.conf"
+  file:
+    path: "{{item['dest'] | dirname }}"
+    state: directory
+
 - name: Copy dotfiles
   loop:
     - src: "../dotfiles/i3wm/i3_config"
       dest: "$HOME/.config/i3/config"
     - src: "../dotfiles/i3wm/i3_config"
       dest: "$HOME/.config/i3blocks/config"
+    - src: "../dotfiles/.picom.conf"
+      dest: "$HOME/.picom.conf"
   copy:
     src: "{{item['src']}}"
     dest: "{{item['dest']}}"

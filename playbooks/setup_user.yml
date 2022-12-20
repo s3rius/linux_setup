@@ -37,5 +37,5 @@
     - name: "Copy dotfiles"
       loop: "{{dotenv_files}}"
       copy:
-        src: "{{item['source']}}"
+        src: "{{item['src']}}"
         dest: "{{item['dest']}}"

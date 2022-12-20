@@ -49,9 +49,7 @@ aur_deps:
   - visual-studio-code-bin
 
 dotenv_files:
-  - src: ./dotfiles/.zshrc
+  - src: ../dotfiles/.zshrc
     dest: "$HOME/.zshrc"
-  - src: ./dotfiles/.zshenv
+  - src: ../dotfiles/.zshenv
     dest: "$HOME/.zshenv"
-  - src: ./dotfiles/.picom.conf
-    dest: "$HOME/.zshrc"
