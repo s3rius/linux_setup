@@ -50,6 +50,7 @@ aur_deps:
   - ttf-symbola
   - ttf-ubraille
   - visual-studio-code-bin
+  - deadd-notification-center-bin
 
 dotenv_files:
   - src: ../dotfiles/.zshrc

@@ -21,6 +21,7 @@
           - dmenu
           - lightdm
           - lightdm-gtk-greeter
+          - network-manager-applet
       pacman:
         name: "{{xorg_packages}}"
         state: present
