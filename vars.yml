@@ -25,6 +25,7 @@ pacman_packages:
   - lsd
   - opendesktop-fonts
   - noto-fonts-emoji
+  - pyenv
   - playerctl
   - shellcheck
   - ttf-fira-code
