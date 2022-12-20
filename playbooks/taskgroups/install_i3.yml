@@ -19,7 +19,7 @@
   loop:
     - src: "../dotfiles/i3wm/i3_config"
       dest: "$HOME/.config/i3/config"
-    - src: "../dotfiles/i3wm/i3_config"
+    - src: "../dotfiles/i3wm/i3blocks_config"
       dest: "$HOME/.config/i3blocks/config"
     - src: "../dotfiles/.picom.conf"
       dest: "$HOME/.picom.conf"
