@@ -31,5 +31,5 @@
       lineinfile:
         dest: /etc/lightdm/lightdm.conf
         state: present
-        regexp: "^#greeter-session=$"
+        regexp: "^#greeter-session=.*$"
         line: "greeter-session=lightdm-gtk-greeter"
