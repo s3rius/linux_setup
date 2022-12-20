@@ -6,15 +6,6 @@
     state: present
     update_cache: yes
 
-- name: Create dirs
-  loop:
-    - dest: "$HOME/.config/i3/config"
-    - dest: "$HOME/.config/i3blocks/config"
-    - dest: "$HOME/.picom.conf"
-  file:
-    path: "{{item['dest'] | dirname }}"
-    state: directory
-
 - name: Copy dotfiles
   loop:
     - src: "../dotfiles/i3wm/i3_config"
@@ -23,6 +14,4 @@
       dest: "$HOME/.config/i3blocks/config"
     - src: "../dotfiles/.picom.conf"
       dest: "$HOME/.picom.conf"
-  copy:
-    src: "{{item['src']}}"
-    dest: "{{item['dest']}}"
+  include_tasks: safe_copy.yml

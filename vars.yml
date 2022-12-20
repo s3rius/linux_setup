@@ -9,6 +9,7 @@ new_groups:
   - docker
 efi_mountpoint: /boot/EFI
 bootloader_id: I Use Arch BTW
+install_custom_firefox: true
 
 pacman_packages:
   - acpi
@@ -17,6 +18,7 @@ pacman_packages:
   - bat
   - community/kitty
   - community/starship
+  - docker
   - firefox
   - kubectl
   - lazygit
@@ -54,5 +56,10 @@ dotenv_files:
     dest: "$HOME/.zshrc"
   - src: ../dotfiles/.zshenv
     dest: "$HOME/.zshenv"
+  - src: ../dotfiles/kitty.conf
+    dest: "$HOME/.config/kitty/kitty.conf"
   - src: ../dotfiles/.zfunc
     dest: "$HOME"
+
+enable_services:
+  - docker.service

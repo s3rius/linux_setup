@@ -3,7 +3,6 @@
   vars_files:
     - "../vars.yml"
   tasks:
-
     - name: Setup Rust
       block:
         - name: Install rustup
@@ -36,6 +35,10 @@
 
     - name: "Copy dotfiles"
       loop: "{{dotenv_files}}"
-      copy:
-        src: "{{item['src']}}"
-        dest: "{{item['dest']}}"
+      include_tasks: taskgroups/safe_copy.yml
+
+    - name: "Enable services"
+      loop: "{{enable_services}}"
+      service:
+        name: "{{item}}"
+        enabled: true
