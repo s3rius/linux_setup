@@ -28,8 +28,17 @@
 
     - name: Configure lightdm
       become: true
-      lineinfile:
-        dest: /etc/lightdm/lightdm.conf
-        state: present
-        regexp: "^#greeter-session=.*$"
-        line: "greeter-session=lightdm-gtk-greeter"
+      block:
+        - name: "Configure lightdm"
+          lineinfile:
+            dest: /etc/lightdm/lightdm.conf
+            state: present
+            regexp: "^#greeter-session=.*$"
+            line: "greeter-session=lightdm-gtk-greeter"
+        - name: Enable service
+          service:
+            name: lightdm.service
+            enabled: true
+
+    - name: Install WM
+      include_tasks: taskgroups/install_i3.yml
