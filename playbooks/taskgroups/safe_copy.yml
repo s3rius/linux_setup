@@ -1,5 +1,6 @@
 ---
 - name: Create dir
+  ignore_errors: true
   file:
     path: "{{item['dest'] | dirname }}"
     state: directory

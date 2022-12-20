@@ -39,6 +39,7 @@
 
     - name: "Enable services"
       loop: "{{enable_services}}"
+      become: true
       service:
         name: "{{item}}"
         enabled: true
