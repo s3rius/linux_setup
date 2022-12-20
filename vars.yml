@@ -53,3 +53,5 @@ dotenv_files:
     dest: "$HOME/.zshrc"
   - src: ../dotfiles/.zshenv
     dest: "$HOME/.zshenv"
+  - src: ../dotfiles/.zfunc
+    dest: "$HOME"
