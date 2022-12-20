@@ -17,33 +17,20 @@ pacman_packages:
   - bat
   - community/kitty
   - community/starship
-  - dmenu
   - firefox
-  - gnome-keyring
   - kubectl
   - lazygit
   - libldac
   - libsecret
   - lsd
-  - maim
-  - nitrogen
   - opendesktop-fonts
   - noto-fonts-emoji
-  - picom
   - playerctl
   - shellcheck
-  - sudo
   - ttf-fira-code
   - ttf-font-awesome
   - ttf-ubuntu-font-family
-  - unclutter
   - vim
-  - xclip
-  - xdg-utils
-  - xorg
-  - xorg-xclock
-  - xorg-xinit
-  - xterm
   - zsh
   - zsh-autosuggestions
   - zsh-syntax-highlighting
@@ -62,5 +49,9 @@ aur_deps:
   - visual-studio-code-bin
 
 dotenv_files:
-  - source: ./dotfiles/.zshrc
+  - src: ./dotfiles/.zshrc
+    dest: "$HOME/.zshrc"
+  - src: ./dotfiles/.zshenv
+    dest: "$HOME/.zshenv"
+  - src: ./dotfiles/.picom.conf
     dest: "$HOME/.zshrc"

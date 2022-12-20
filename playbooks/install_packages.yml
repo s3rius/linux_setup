@@ -7,6 +7,7 @@
     - name: Setup Rust
       block:
         - name: Install rustup
+          become: true
           pacman:
             name: rustup
             state: present
@@ -32,3 +33,9 @@
     - name: "Build packages from source"
       loop: "{{custom_packages}}"
       include_tasks: taskgroups/install_from_git.yml
+
+    - name: "Copy dotfiles"
+      loop: "{{dotenv_files}}"
+      copy:
+        src: "{{item['source']}}"
+        dest: "{{item['dest']}}"

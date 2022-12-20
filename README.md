@@ -55,7 +55,10 @@ ansible-playbook -i inventory.ini chroot_playbook.yml
 # You can persist your config if you clone it to a different directory.
 git clone https://github.com/s3rius/linux_setup.git /tmp/linux_setup
 cd /tmp/linux_setup
+
+python -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
 # This is config for users.
-ansible-playbook -i inventory.ini user_playbook.yml
+ansible-playbook -i inventory.ini user_playbook.yml --ask-become-pass
 ```

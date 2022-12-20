@@ -1,0 +1,12 @@
+[battery]
+command=acpi -b | cut -d '%' -f1 | tr ' ' '\n' | tail -n1 | xargs -I{} echo "🔋{}%"
+interval=10
+
+[temp_cpu]
+command=echo "CPU: "$[100-$(vmstat|tail -1|awk '{print $15}')]"%"
+interval=3
+
+# Update time every 5 seconds
+[time]
+command=date +%T
+interval=1

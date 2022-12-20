@@ -1,0 +1,16 @@
+---
+- name: Install i3
+  become: true
+  pacman:
+    name: "i3wm,i3blocks"
+    state: present
+    update_cache: yes
+- name: Copy dotfiles
+  loop:
+    - src: "../dotfiles/i3wm/i3_config"
+      dest: "$HOME/.config/i3/config"
+    - src: "../dotfiles/i3wm/i3_config"
+      dest: "$HOME/.config/i3blocks/config"
+  copy:
+    src: "{{item['src']}}"
+    dest: "{{item['dest']}}"
