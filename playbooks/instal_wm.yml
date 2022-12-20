@@ -27,6 +27,7 @@
         update_cache: yes
 
     - name: Configure lightdm
+      become: true
       lineinfile:
         dest: /etc/lightdm/lightdm.conf
         state: present

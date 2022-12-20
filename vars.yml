@@ -42,7 +42,7 @@ custom_packages:
     build_command: yes | makepkg -fsri
 
 aur_deps:
-  - autojump
+  - autojump-rs
   - avizo
   - ttf-symbola
   - ttf-ubraille
