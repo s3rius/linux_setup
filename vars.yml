@@ -37,6 +37,21 @@ pacman_packages:
   - zsh
   - zsh-autosuggestions
   - zsh-syntax-highlighting
+  - tk
+  - os-prober
+  - ntfs-3g
+  - wget
+  - zip
+  - unzip
+  - feh
+  - curl
+  - linux-headers
+  - bluez
+  - bluez-libs
+  - pavucontrol
+  - pulseaudio
+  - pulseaudio-bluetooth
+  - blueman
 
 custom_packages:
   - git_url: https://github.com/robbyrussell/oh-my-zsh.git
