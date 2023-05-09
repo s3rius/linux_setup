@@ -52,6 +52,10 @@ pacman_packages:
   - pulseaudio
   - pulseaudio-bluetooth
   - blueman
+  - ttf-iosevka-nerd
+  - mpv
+  - pamixer
+  - polybar
 
 custom_packages:
   - git_url: https://github.com/robbyrussell/oh-my-zsh.git
@@ -66,8 +70,12 @@ aur_deps:
   - ttf-ubraille
   - visual-studio-code-bin
   - deadd-notification-center-bin
+  - nerd-fonts-meta
+  - visual-studio-code-bin
+  - gitflow-avh
 
 dotenv_files:
+  - 
   - src: ../dotfiles/.zshrc
     dest: "$HOME/.zshrc"
   - src: ../dotfiles/.zshenv

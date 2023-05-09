@@ -16,8 +16,10 @@
   loop:
     - src: "../dotfiles/i3wm/i3_config"
       dest: "$HOME/.config/i3/config"
-    - src: "../dotfiles/i3wm/i3blocks_config"
-      dest: "$HOME/.config/i3blocks/config"
+    - src: "../dotfiles/i3wm/polybar_config.ini"
+      dest: "$HOME/.config/polybar/config.ini"
+    - src: "../dotfiles/i3wm/polybar_launch.sh"
+      dest: "$HOME/.config/polybar/launch.sh"
     - src: "../dotfiles/.picom.conf"
       dest: "$HOME/.picom.conf"
   include_tasks: safe_copy.yml
