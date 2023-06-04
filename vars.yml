@@ -75,7 +75,6 @@ aur_deps:
   - gitflow-avh
 
 dotenv_files:
-  - 
   - src: ../dotfiles/.zshrc
     dest: "$HOME/.zshrc"
   - src: ../dotfiles/.zshenv
