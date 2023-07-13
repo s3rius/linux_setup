@@ -18,8 +18,9 @@
           - maim
           - gnome-keyring
           - dmenu
-          - lightdm
-          - lightdm-gtk-greeter
+          # - lightdm
+          # - lightdm-gtk-greeter
+          - sddm
           - network-manager-applet
       pacman:
         name: "{{xorg_packages}}"
@@ -30,19 +31,27 @@
       command:
         cmd: "paru -Syu --needed --noconfirm picom-simpleanims-git"
 
-    - name: Configure lightdm
+    # - name: Configure lightdm
+      # become: true
+      # block:
+        # - name: "Configure lightdm"
+          # lineinfile:
+            # dest: /etc/lightdm/lightdm.conf
+            # state: present
+            # regexp: "^#greeter-session=.*$"
+            # line: "greeter-session=lightdm-gtk-greeter"
+        # - name: Enable service
+          # service:
+            # name: lightdm.service
+            # enabled: true
+
+    - name: Configure 
       become: true
       block:
-        - name: "Configure lightdm"
-          lineinfile:
-            dest: /etc/lightdm/lightdm.conf
-            state: present
-            regexp: "^#greeter-session=.*$"
-            line: "greeter-session=lightdm-gtk-greeter"
         - name: Enable service
           service:
-            name: lightdm.service
-            enabled: true
+            name: sddm.service
+            enable: true
 
     - name: Install WM
       include_tasks: taskgroups/install_i3.yml
