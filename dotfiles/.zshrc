@@ -69,7 +69,7 @@ COMPLETION_WAITING_DOTS="true"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git sudo docker autojump)
+plugins=(git sudo docker autojump git-flow-completion)
 
 source $ZSH/oh-my-zsh.sh
 alias ls=lsd
@@ -89,6 +89,7 @@ alias poop='git push origin "$(git branch | grep "\*" | cut -d " " -f2)"'
 alias vommit='git commit -sS'
 alias eat_shit='git pull origin "$(git branch | grep "\*" | cut -d " " -f2)"'
 alias cat="bat"
+alias dips='docker compose ps -q | xargs docker inspect -f "{{.Name}} {{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}"'
 # User configuration
 
 # export MANPATH="/usr/local/man:$MANPATH"

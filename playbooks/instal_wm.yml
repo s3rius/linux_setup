@@ -14,7 +14,6 @@
           - xdg-utils
           - xclip
           - unclutter
-          - picom
           - nitrogen
           - maim
           - gnome-keyring
@@ -26,6 +25,10 @@
         name: "{{xorg_packages}}"
         state: present
         update_cache: yes
+
+    - name: Install aur packages for wm
+      command:
+        cmd: "paru -Syu --needed --noconfirm picom-simpleanims-git"
 
     - name: Configure lightdm
       become: true

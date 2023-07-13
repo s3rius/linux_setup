@@ -42,6 +42,7 @@ exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
 exec --no-startup-id nm-applet
 
 # Use pactl to adjust volume in PulseAudio.
+# set $refresh_i3status pkill -RTMIN+1 i3blocks
 bindsym XF86AudioRaiseVolume exec --no-startup-id volumectl raise 
 bindsym XF86AudioLowerVolume exec --no-startup-id volumectl lower
 bindsym XF86AudioMute exec --no-startup-id volumectl toggle-mute
@@ -55,7 +56,7 @@ bindsym XF86AudioStop exec --no-startup-id playerctl stop
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
 
-default_border pixel 1
+default_border pixel 0
 default_floating_border none
 
 # move tiling windows via drag & drop by left-clicking into the title bar,
@@ -73,7 +74,11 @@ bindsym $mod+Shift+comma move container to output left
 bindsym $mod+Shift+period move container to output right
 
 # start dmenu (a program launcher)
-bindsym $mod+d exec --no-startup-id "dmenu_run -nf '#F8F8F2' -nb '#282A36' -sb '#6272A4' -sf '#F8F8F2' -fn 'monospace-10' -p 'run'"
+# bindsym $mod+d exec --no-startup-id "dmenu_run -nf '#F8F8F2' -nb '#282A36' -sb '#6272A4' -sf '#F8F8F2' -fn 'monospace-10' -p 'run'"
+
+bindsym $mod+d exec --no-startup-id "rofi -show drun"
+bindsym $mod+Shift+d exec --no-startup-id "rofi -show run"
+
 # A more modern dmenu replacement is rofi:
 # bindcode $mod+40 exec "rofi -modi drun,run -show drun"
 # There also is i3-dmenu-desktop which only displays applications shipping a
