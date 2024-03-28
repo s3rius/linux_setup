@@ -2,27 +2,26 @@
 
 # Terminate already running bar instances
 # If all your bars have ipc enabled, you can use 
-polybar-msg cmd quit
+killall -q polybar || echo "Already dead"
 # Otherwise you can use the nuclear option:
-# killall -q polybar
+# polybar-msg cmd quit
 
 # Launch bar1 and bar2
 echo "---" | tee -a /tmp/polybar.log
+QUERY="$(xrandr --query)"
 
-PRIMARY_MON="$(xrandr --query | grep " connected" | grep "primary" | cut -d ' ' -f 1)"
+PRIMARY_MON="$(echo "$QUERY" | grep " connected" | grep "primary" | cut -d ' ' -f 1)"
 
-echo "Launching bar for primary monitor: $PRIMARY_MON"
-
-MONITOR=$PRIMARY_MON TRAY_POS=right polybar & disown
+MONITOR=$PRIMARY_MON TRAY_POS=right polybar -q &
 
 
 if type "xrandr"; then
-  for m in $(xrandr --query | grep " connected" | grep -v "primary" | cut -d ' ' -f 1); do
+  for m in $(echo "$QUERY" | grep " connected" | grep -v "primary" | cut -d ' ' -f 1); do
     echo "Starting bar for monitor $m"
-    MONITOR=$m polybar & disown
+    MONITOR=$m polybar -q & 
   done
 else
-  polybar --reload &
+  polybar -q --reload & 
 fi
 
 echo "Bars launched..."

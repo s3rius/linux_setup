@@ -34,7 +34,6 @@
 window {
     location: center;
     anchor:   center;
-    transparency: "real";
     border-radius: 5px;
     // height: 550px;
     // width: 600px;
@@ -45,7 +44,7 @@ window {
 
     // background-color: @transparent;
     spacing: 0;
-    children:  [overlay, mainbox];
+    children:  [mainbox];
     orientation: horizontal;
 }
 

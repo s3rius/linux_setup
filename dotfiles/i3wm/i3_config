@@ -19,8 +19,10 @@ exec --no-startup-id setxkbmap -model pc105 -layout us,ru -option grp:caps_toggl
 exec --no-startup-id avizo-service
 exec --no-startup-id unclutter
 exec --no-startup-id deadd-notification-center
-exec --no-startup-id nitrogen --restore
-exec_always --no-startup-id $HOME/.config/polybar/launch.sh
+exec --no-startup-id sleep 1 && autoxrandr --on-remap '/bin/sh -c "sleep 0.5 && (killall polybar || echo "no") && nitrogen --restore 2>/dev/null && ~/.config/polybar/launch.sh"' --reapply
+# exec_always --no-startup-id $HOME/.config/polybar/launch.sh
+# exec_always --no-startup-id nitrogen --restore
+
 
 # This font is widely installed, provides lots of unicode glyphs, right-to-left
 # text rendering and scalability on retina/hidpi displays (thanks to pango).
@@ -78,7 +80,6 @@ bindsym $mod+Shift+period move container to output right
 
 bindsym $mod+d exec --no-startup-id "rofi -show drun"
 bindsym $mod+Shift+d exec --no-startup-id "rofi -show run"
-
 # A more modern dmenu replacement is rofi:
 # bindcode $mod+40 exec "rofi -modi drun,run -show drun"
 # There also is i3-dmenu-desktop which only displays applications shipping a
@@ -108,7 +109,7 @@ bindsym $mod+Shift+Left move left
 bindsym $mod+Shift+Down move down
 bindsym $mod+Shift+Up move up
 bindsym $mod+Shift+Right move right
-
+bindsym $mod+Shift+e exec kitty yazi
 # split in horizontal orientation
 bindsym $mod+h split h
 
@@ -193,10 +194,10 @@ mode "resize" {
         bindsym semicolon resize grow width 10 px or 10 ppt
 
         # same bindings, but for the arrow keys
-        bindsym Left resize shrink width 10 px or 10 ppt
+        bindsym Left resize grow width 10 px or 10 ppt
         bindsym Down resize grow height 10 px or 10 ppt
         bindsym Up resize shrink height 10 px or 10 ppt
-        bindsym Right resize grow width 10 px or 10 ppt
+        bindsym Right resize shrink width 10 px or 10 ppt
 
         # back to normal: Enter or Escape or $mod+r
         bindsym Return mode "default"
@@ -206,10 +207,11 @@ mode "resize" {
 
 bindsym $mod+r mode "resize"
 
-client.focused_inactive #44475A #44475A #F8F8F2 #44475A   #44475A
-client.unfocused        #282A36 #282A36 #BFBFBF #282A36   #282A36
-client.urgent           #44475A #FF5555 #F8F8F2 #FF5555   #FF5555
-client.placeholder      #282A36 #282A36 #F8F8F2 #282A36   #282A36
+# client.focused_inactive #44475A #44475A #F8F8F2 #44475A   #44475A
+client.focused		#F0C674 #F0C674 #F8F8F2 #F0C674 #F0C674 
+client.unfocused        #282A36 #282A36 #BFBFBF #282A36 #282A36
+# client.urgent           #44475A #FF5555 #F8F8F2 #FF5555 #FF5555
+# client.placeholder      #282A36 #282A36 #F8F8F2 #282A36 #282A36
 
 client.background       #F8F8F2
 
