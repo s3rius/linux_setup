@@ -51,7 +51,7 @@
         - name: Enable service
           service:
             name: sddm.service
-            enable: true
+            enabled: true
 
     - name: Install WM
       include_tasks: taskgroups/install_i3.yml
