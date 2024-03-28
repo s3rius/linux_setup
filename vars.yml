@@ -13,11 +13,10 @@ install_custom_firefox: true
 
 pacman_packages:
   - acpi
-  - asp
   - base-devel
   - bat
-  - community/kitty
-  - community/starship
+  - kitty
+  - starship
   - docker
   - firefox
   - kubectl
