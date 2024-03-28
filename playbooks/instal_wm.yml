@@ -18,6 +18,8 @@
           - maim
           - gnome-keyring
           - dmenu
+          - rofi
+          - picom
           # - lightdm
           # - lightdm-gtk-greeter
           - sddm
@@ -26,24 +28,6 @@
         name: "{{xorg_packages}}"
         state: present
         update_cache: yes
-
-    - name: Install aur packages for wm
-      command:
-        cmd: "paru -Syu --needed --noconfirm picom-simpleanims-git"
-
-    # - name: Configure lightdm
-      # become: true
-      # block:
-        # - name: "Configure lightdm"
-          # lineinfile:
-            # dest: /etc/lightdm/lightdm.conf
-            # state: present
-            # regexp: "^#greeter-session=.*$"
-            # line: "greeter-session=lightdm-gtk-greeter"
-        # - name: Enable service
-          # service:
-            # name: lightdm.service
-            # enabled: true
 
     - name: Configure 
       become: true
