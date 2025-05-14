@@ -24,6 +24,8 @@ const DOTFILES_MAPPING: LazyCell<HashMap<&'static str, &'static str>> = LazyCell
     mapping
 });
 
+const EXTRA_GROUPS: &'static [&'static str] = &["docker", "wheel"];
+
 const AUR_PACKAGES: &'static [&'static str] = &[
     // Randoms
     "autojump-rs",
@@ -217,14 +219,10 @@ fn chroot_install(args: ChrootInstallArgs) -> anyhow::Result<()> {
     ch_passwd("root", &root_password)?;
 
     // Create groups.
-    mk_groups(["docker", &args.username].iter())?;
+    mk_groups(EXTRA_GROUPS.iter())?;
     // Create %wheel group.
     update_sudoers()?;
-    create_user(
-        &args.username,
-        &["docker", &args.username, "wheel"],
-        "/bin/zsh",
-    )?;
+    create_user(&args.username, EXTRA_GROUPS, "/bin/zsh")?;
     ch_passwd(&args.username, &user_password)?;
     install_grub(&args.efi_target, &args.efi_mountpoint, &args.bootloader_id)?;
     install_network_manager()?;
