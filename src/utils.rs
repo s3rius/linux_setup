@@ -57,7 +57,7 @@ pub fn install_pacman_packages<T: IntoIterator<Item = impl ToString>>(
     become_pass: Option<&str>,
 ) -> anyhow::Result<()> {
     println!("Installing pacman packages");
-    let args = vec!["-Syu", "--noconfirm"]
+    let args = vec!["-Syu", "--noconfirm", "--needed"]
         .into_iter()
         .map(ToString::to_string)
         .chain(packages.into_iter().map(|item| item.to_string()));
