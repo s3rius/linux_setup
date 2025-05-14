@@ -223,10 +223,10 @@ fn chroot_install(args: ChrootInstallArgs) -> anyhow::Result<()> {
         &["docker", &args.username, "wheel"],
         "/bin/zsh",
     )?;
+    ch_passwd(&args.username, &user_password)?;
     install_grub(&args.efi_target, &args.efi_mountpoint, &args.bootloader_id)?;
     install_network_manager()?;
 
-    ch_passwd(&args.username, &user_password)?;
 
     Ok(())
 }
