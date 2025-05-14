@@ -1,10 +1,4 @@
-use std::{
-    cell::LazyCell,
-    collections::HashMap,
-    fs::read_to_string,
-    io::Write,
-    path::PathBuf,
-};
+use std::{cell::LazyCell, collections::HashMap, fs::read_to_string, io::Write, path::PathBuf};
 
 use clap::Parser;
 use cli::{ChrootInstallArgs, Cli};
@@ -99,11 +93,11 @@ const PACMAN_PACKAGES: &'static [&'static str] = &[
     "mpv",
     "java-runtime-common",
     // Lang servers
-    "rust-analyzer ",
+    "rust-analyzer",
     "lua-language-server",
-    "pyright ",
-    "typescript-language-server ",
-    "vue-language-server ",
+    "pyright",
+    "typescript-language-server",
+    "vue-language-server",
     "vue-typescript-plugin",
     "ruff",
     "yaml-language-server",
