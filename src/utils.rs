@@ -152,6 +152,7 @@ pub fn create_user(username: &str, groups: &[&str], shell: &str) -> anyhow::Resu
             "--shell",
             shell,
             "--user-group",
+            username,
         ],
         None,
     )?;
