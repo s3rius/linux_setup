@@ -14,6 +14,7 @@ mod cli;
 mod custom_package;
 mod dotfiles;
 mod utils;
+mod wm;
 
 const PARU_VERSION: &str = "v2.0.4";
 const DOTFILES_MAPPING: LazyCell<HashMap<&'static str, &'static str>> = LazyCell::new(|| {
@@ -40,7 +41,6 @@ const AUR_PACKAGES: &'static [&'static str] = &[
     "nerd-fonts",
     // Lang servers.
     "terraform-ls-bin",
-    "markdown-oxide-git",
     "helm-ls-bin",
     // QT5
     "qt5-gamepad",
@@ -146,12 +146,14 @@ fn user_install() -> anyhow::Result<()> {
     } else {
         anyhow::bail!("Unsupported architecture");
     };
-    // Installing
+    // Installing AUR helper.
     CustomPackage::HttpFile {
         url: format!("https://github.com/Morganamilo/paru/releases/download/{PARU_VERSION}/paru-{PARU_VERSION}-{arch}.tar.zst").as_str(),
         install_command: format!("tar xvf paru-{PARU_VERSION}-{arch}.tar.zst && ./paru -Syu --noconfirm paru-bin").as_str(),
     }
         .install()?;
+
+    wm::hypr::install_hyprland()?;
 
     install_aur_packages(AUR_PACKAGES)?;
     for package in CUSTOM_PACKAGES {
@@ -160,7 +162,7 @@ fn user_install() -> anyhow::Result<()> {
 
     Dotfiles::copy(&DOTFILES_MAPPING)?;
 
-    enable_services(SERVICES_TO_ENABLE, false)?;
+    enable_services(SERVICES_TO_ENABLE, true)?;
     Ok(())
 }
 
