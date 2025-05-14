@@ -124,11 +124,14 @@ pub fn mk_groups(groups: impl Iterator<Item = impl ToString>) -> anyhow::Result<
 
 pub fn update_sudoers() -> anyhow::Result<()> {
     println!("Updating sudoers");
+    let wheel_rule = "%wheel ALL=(ALL) ALL";
+
     std::fs::write(
         "/etc/sudoers",
         std::fs::read_to_string("/etc/sudoers")?
             .lines()
-            .chain(["%wheel ALL=(ALL) ALL"])
+            .filter(|line| line != &wheel_rule)
+            .chain([wheel_rule])
             .collect::<Vec<_>>()
             .join("\n"),
     )?;
