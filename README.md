@@ -44,16 +44,13 @@ cd /tmp/linux_setup
 cargo run chroot
 ```
 
-Now you need to update vars file according to your needs.
-After you're ready just enter
+Once you run this command, you can safely reboot to your newly created system. On your first boot,
+use your username and password to log in. On your first login, please run this command to finish setup.
 
 ```bash
-ansible-playbook -i inventory.ini chroot_playbook.yml
-
-# Reboot your system, log onto your new account
-# You can persist your config if you clone it to a different directory.
-cd /home/linux_setup
-source .venv/bin/activate
-# This is config for users.
-ansible-playbook -i inventory.ini user_playbook.yml --ask-become-pass
+# Please check `--help` for arguments.
+linux-setup user
 ```
+
+By default after everything is setup, you will be able to find this repo at `$HOME/.config/linux_setup`.
+When you do updates to your dotfiles, just run `linux-setup sync` to sync updated files with the repository.
