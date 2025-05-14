@@ -42,14 +42,6 @@ const AUR_PACKAGES: &'static [&'static str] = &[
     // Lang servers.
     "terraform-ls-bin",
     "helm-ls-bin",
-    // QT5
-    "qt5-gamepad",
-    "qt5-lottie",
-    "qt5-purchasing",
-    "qt5-quicktimeline",
-    "qt5-serialbus",
-    "qt5-webglplugin",
-    "qt5-webview",
 ];
 const PACMAN_PACKAGES: &'static [&'static str] = &[
     // Top programs
@@ -79,8 +71,6 @@ const PACMAN_PACKAGES: &'static [&'static str] = &[
     "pavucontrol",
     "playerctl",
     "blueman",
-    "pipewire",
-    "pipewire-pulse",
     // Random stuff
     "acpi",
     "base-devel",
