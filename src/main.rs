@@ -1,0 +1,238 @@
+use std::{
+    cell::LazyCell,
+    collections::HashMap,
+    fs::read_to_string,
+    io::Write,
+    path::PathBuf,
+};
+
+use clap::Parser;
+use cli::{ChrootInstallArgs, Cli};
+use custom_package::CustomPackage;
+use utils::{
+    ch_passwd, create_user, get_password, install_grub, install_network_manager,
+    install_pacman_packages, mk_groups, run_command, uncomment_locales, update_sudoers,
+};
+
+mod cli;
+mod custom_package;
+mod dotfiles;
+mod utils;
+
+const DOTFILES_MAPPING: LazyCell<HashMap<&'static str, &'static str>> = LazyCell::new(|| {
+    let mut mapping = HashMap::new();
+    mapping.insert(".zshrc", "$HOME/.zshrc");
+    mapping.insert(".zshenv", "$HOME/.zshenv");
+    mapping.insert("kitty.conf", "$HOME/.config/kitty/kitty.conf");
+    mapping.insert(".zfunc", "$HOME/.zfunc");
+    mapping.insert("hypr", "$HOME/.config/hypr");
+    mapping.insert("nvim", "$HOME/.config/nvim");
+    mapping
+});
+
+const AUR_PACKAGES: &'static [&'static str] = &[
+    // Randoms
+    "autojump-rs",
+    "deadd-notification-center-bin",
+    "zen-browser-bin",
+    // Fonts
+    "ttf-symbola",
+    "ttf-ubraille",
+    "nerd-fonts",
+    // Lang servers.
+    "terraform-ls-bin",
+    "markdown-oxide-git",
+    "helm-ls-bin",
+    // QT5
+    "qt5-gamepad",
+    "qt5-lottie",
+    "qt5-purchasing",
+    "qt5-quicktimeline",
+    "qt5-serialbus",
+    "qt5-webglplugin",
+    "qt5-webview",
+];
+const PACMAN_PACKAGES: &'static [&'static str] = &[
+    // Top programs
+    "neovim",
+    "bat",
+    "kitty",
+    "starship",
+    "docker",
+    "lsd",
+    "mise",
+    "kubectl",
+    // Shell shit
+    "zsh",
+    "zsh-autosuggestions",
+    "zsh-syntax-highlighting",
+    // Fonts
+    "ttf-fira-code",
+    "ttf-font-awesome",
+    "ttf-iosevka-nerd",
+    "ttf-ubuntu-font-family",
+    "otf-font-awesome",
+    "opendesktop-fonts",
+    // Audio
+    "bluez",
+    "bluez-libs",
+    "bluez-utils",
+    "pavucontrol",
+    "playerctl",
+    "blueman",
+    "pipewire",
+    "pipewire-pulse",
+    // Random stuff
+    "acpi",
+    "base-devel",
+    "libldac",
+    "noto-fonts-emoji",
+    "gnome-keyring",
+    "linux-headers",
+    "tk",
+    "os-prober",
+    "wget",
+    "zip",
+    "unzip",
+    "feh",
+    "curl",
+    "mpv",
+    "java-runtime-common",
+    // Lang servers
+    "rust-analyzer ",
+    "lua-language-server",
+    "pyright ",
+    "typescript-language-server ",
+    "vue-language-server ",
+    "vue-typescript-plugin",
+    "ruff",
+    "yaml-language-server",
+    "texlab",
+    "gopls",
+];
+
+const CUSTOM_PACKAGES: &'static [CustomPackage] = &[CustomPackage::GitPackage {
+    url: "https://github.com/robbyrussell/oh-my-zsh.git",
+    build_command: "sh ./tools/install.sh",
+}];
+const SERVICES_TO_ENABLE: &'static [&'static str] = &["docker.service"];
+
+fn main() -> anyhow::Result<()> {
+    let args = Cli::parse();
+    match args {
+        Cli::Chroot(args) => {
+            chroot_install(args)?;
+        }
+        Cli::User {} => {
+            unimplemented!()
+        }
+        Cli::Sync {} => {
+            sync_files()?;
+        }
+    }
+
+    Ok(())
+}
+
+fn sync_files() -> anyhow::Result<()> {
+    let main_folder = env!("CARGO_MANIFEST_DIR");
+    let dotfiles_folder = PathBuf::from(format!("{main_folder}/dotfiles"));
+    println!("Syncing dotfiles for {dotfiles_folder:?}");
+    for (local_path, sys_path) in DOTFILES_MAPPING.iter() {
+        let sys_path = PathBuf::from(shellexpand::full(sys_path)?.to_string());
+        let mut target_path = dotfiles_folder.join(local_path);
+        println!(
+            "Copying {} to {}",
+            sys_path.display(),
+            target_path.display()
+        );
+        if !sys_path.exists() {
+            println!("Source file does not exist: {}", sys_path.display());
+            continue;
+        }
+        if sys_path.is_dir() {
+            target_path.pop();
+        }
+        run_command(
+            "cp",
+            [
+                "-r",
+                sys_path.display().to_string().as_str(),
+                target_path.display().to_string().as_str(),
+            ],
+            None,
+        )?;
+    }
+    // Cleanup private things.
+    for file in dotfiles_folder.join(".zfunc").read_dir()?.flatten() {
+        if file.file_name().to_string_lossy().starts_with("_") {
+            println!("Removing private file: {}", file.path().display());
+            std::fs::remove_file(file.path())?;
+        }
+    }
+    std::fs::remove_file(dotfiles_folder.join("nvim/lua/config/intree.lua")).ok();
+    // Remove intree from nvim init.
+    let init_contents = read_to_string(dotfiles_folder.join("nvim/init.lua"))?;
+    let mut nvim_init = std::fs::OpenOptions::new()
+        .write(true)
+        .truncate(true)
+        .open(dotfiles_folder.join("nvim/init.lua"))?;
+    for line in init_contents.lines() {
+        if line.contains("intree") {
+            println!("Removing intree from nvim init");
+            continue;
+        }
+        nvim_init.write(line.as_bytes())?;
+        nvim_init.write(b"\n")?;
+    }
+
+    Ok(())
+}
+
+fn chroot_install(args: ChrootInstallArgs) -> anyhow::Result<()> {
+    if users::get_current_username().unwrap() != "root" {
+        anyhow::bail!("You must run this script as root");
+    }
+    let hostname = format!("{}-pc", args.username);
+
+    let user_password = get_password("user")?;
+    let root_password = get_password("root")?;
+
+    install_pacman_packages(["sudo"], None)?;
+    install_pacman_packages(PACMAN_PACKAGES, None)?;
+    // Setting currene timezone.
+    std::os::unix::fs::symlink(
+        format!("/usr/share/zoneinfo/{}", args.timezone),
+        "/etc/localtime",
+    )?;
+    // Set correct time.
+    run_command("hwclock", ["--systohc"], None)?;
+    // Set up locales.
+    uncomment_locales(args.locales.iter())?;
+    run_command::<String>("locale-gen", [], None)?;
+    // Update networking essentials.
+    std::fs::write("/etc/hostname", hostname)?;
+    std::fs::write(
+        "/etc/hosts",
+        vec!["127.0.0.1\tlocalhost", "::1\tlocalhost"].join("\n"),
+    )?;
+    run_command("mkinitcpio", ["-p"], None)?;
+    // Change root password.
+    ch_passwd("root", &root_password)?;
+
+    // Create groups.
+    mk_groups(["docker", &args.username].iter())?;
+    // Create %wheel group.
+    update_sudoers()?;
+    create_user(
+        &args.username,
+        &["docker", &args.username, "wheel"],
+        "/bin/zsh",
+    )?;
+    install_grub(&args.efi_target, &args.efi_mountpoint, &args.bootloader_id)?;
+    install_network_manager()?;
+
+    ch_passwd(&args.username, &user_password)?;
+
+    Ok(())
+}
