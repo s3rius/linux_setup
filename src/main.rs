@@ -15,6 +15,7 @@ mod custom_package;
 mod dotfiles;
 mod utils;
 
+const PARU_VERSION: &str = "v2.0.4";
 const DOTFILES_MAPPING: LazyCell<HashMap<&'static str, &'static str>> = LazyCell::new(|| {
     let mut mapping = HashMap::new();
     mapping.insert(".zshrc", "$HOME/.zshrc");
@@ -134,11 +135,23 @@ fn main() -> anyhow::Result<()> {
 
 fn user_install() -> anyhow::Result<()> {
     println!("Installing paru for AUR packages.");
-    CustomPackage::GitPackage {
-        url: "https://aur.archlinux.org/paru.git",
-        build_command: "yes | makepkg -fsri",
+    run_command("rustup", ["install", "stable"], false)?;
+
+    let arch = if cfg!(target_arch = "x86_64") {
+        "x86_64"
+    } else if cfg!(target_arch = "aarch64") {
+        "aarch64"
+    } else if cfg!(target_arch = "arm") {
+        "armv7h"
+    } else {
+        anyhow::bail!("Unsupported architecture");
+    };
+    // Installing
+    CustomPackage::HttpFile {
+        url: format!("https://github.com/Morganamilo/paru/releases/download/{PARU_VERSION}/paru-{PARU_VERSION}-{arch}.tar.zst").as_str(),
+        install_command: format!("tar xvf paru-{PARU_VERSION}-{arch}.tar.zst && ./paru -Syu --noconfirm paru-bin").as_str(),
     }
-    .install()?;
+        .install()?;
 
     install_aur_packages(AUR_PACKAGES)?;
     for package in CUSTOM_PACKAGES {
@@ -215,7 +228,7 @@ fn chroot_install(args: ChrootInstallArgs) -> anyhow::Result<()> {
     let user_password = get_password("user")?;
     let root_password = get_password("root")?;
 
-    install_pacman_packages(["sudo"], false)?;
+    install_pacman_packages(["sudo", "rustup"], false)?;
     install_pacman_packages(PACMAN_PACKAGES, false)?;
     // Setting currene timezone.
     println!("Setting timezone to {}", args.timezone);

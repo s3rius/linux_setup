@@ -6,6 +6,7 @@ edition = "2024"
 [dependencies]
 anyhow = { version = "1.0.98", features = ["backtrace"] }
 clap = { version = "4.5.38", features = ["derive"] }
+rand = "0.9.1"
 rpassword = "7.4.0"
 rust-embed = "8.7.1"
 shellexpand = { version = "3.1.1", features = ["full"] }
