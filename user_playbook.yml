@@ -1,3 +1,0 @@
----
-- import_playbook: playbooks/setup_user.yml
-- import_playbook: playbooks/instal_wm.yml
