@@ -128,13 +128,7 @@ pub fn update_sudoers() -> anyhow::Result<()> {
         "/etc/sudoers",
         std::fs::read_to_string("/etc/sudoers")?
             .lines()
-            .map(|line| {
-                if line.starts_with("%wheel") {
-                    "%wheel ALL=(ALL) ALL"
-                } else {
-                    line
-                }
-            })
+            .chain(["%wheel ALL=(ALL) ALL"])
             .collect::<Vec<_>>()
             .join("\n"),
     )?;
