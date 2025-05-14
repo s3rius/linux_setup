@@ -12,7 +12,7 @@ impl CustomPackage {
         match self {
             CustomPackage::GitPackage { url, build_command } => {
                 println!("Installing custom package from git URL: {}", url);
-                run_command("git", ["clone", url, "/tmp/build"], None)?;
+                run_command("git", ["clone", url, "/tmp/build"], false)?;
                 let code = std::process::Command::new("bash")
                     .arg("-c")
                     .arg(build_command)

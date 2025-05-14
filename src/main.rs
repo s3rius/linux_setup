@@ -6,8 +6,8 @@ use custom_package::CustomPackage;
 use dotfiles::Dotfiles;
 use utils::{
     ch_passwd, create_user, enable_services, get_password, install_aur_packages, install_grub,
-    install_network_manager, install_pacman_packages, mk_groups, run_command, uncomment_locales,
-    update_sudoers,
+    install_network_manager, install_pacman_packages, mk_groups, run_command, self_install_chroot,
+    uncomment_locales, update_sudoers,
 };
 
 mod cli;
@@ -147,7 +147,7 @@ fn user_install() -> anyhow::Result<()> {
 
     Dotfiles::copy(&DOTFILES_MAPPING)?;
 
-    enable_services(SERVICES_TO_ENABLE)?;
+    enable_services(SERVICES_TO_ENABLE, false)?;
     Ok(())
 }
 
@@ -177,7 +177,7 @@ fn sync_files() -> anyhow::Result<()> {
                 sys_path.display().to_string().as_str(),
                 target_path.display().to_string().as_str(),
             ],
-            None,
+            false,
         )?;
     }
     // Cleanup private things.
@@ -215,8 +215,8 @@ fn chroot_install(args: ChrootInstallArgs) -> anyhow::Result<()> {
     let user_password = get_password("user")?;
     let root_password = get_password("root")?;
 
-    install_pacman_packages(["sudo"], None)?;
-    install_pacman_packages(PACMAN_PACKAGES, None)?;
+    install_pacman_packages(["sudo"], false)?;
+    install_pacman_packages(PACMAN_PACKAGES, false)?;
     // Setting currene timezone.
     println!("Setting timezone to {}", args.timezone);
     std::fs::remove_file("/etc/localtime").ok();
@@ -225,17 +225,17 @@ fn chroot_install(args: ChrootInstallArgs) -> anyhow::Result<()> {
         "/etc/localtime",
     )?;
     // Set correct time.
-    run_command("hwclock", ["--systohc"], None)?;
+    run_command("hwclock", ["--systohc"], false)?;
     // Set up locales.
     uncomment_locales(args.locales.iter())?;
-    run_command::<String>("locale-gen", [], None)?;
+    run_command::<String>("locale-gen", [], false)?;
     // Update networking essentials.
     std::fs::write("/etc/hostname", hostname)?;
     std::fs::write(
         "/etc/hosts",
         vec!["127.0.0.1\tlocalhost", "::1\tlocalhost"].join("\n"),
     )?;
-    run_command("mkinitcpio", ["-p"], None)?;
+    run_command("mkinitcpio", ["-p"], false)?;
     // Change root password.
     ch_passwd("root", &root_password)?;
 
@@ -247,6 +247,7 @@ fn chroot_install(args: ChrootInstallArgs) -> anyhow::Result<()> {
     ch_passwd(&args.username, &user_password)?;
     install_grub(&args.efi_target, &args.efi_mountpoint, &args.bootloader_id)?;
     install_network_manager()?;
+    self_install_chroot()?;
 
     Ok(())
 }

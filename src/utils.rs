@@ -1,6 +1,7 @@
 use std::{
     ffi::OsStr,
     io::Write,
+    path::PathBuf,
     process::{Command, ExitStatus, Stdio},
 };
 
@@ -25,43 +26,32 @@ pub fn get_password(pass_ty: &'static str) -> anyhow::Result<String> {
 pub fn run_command<T: AsRef<OsStr>>(
     command: impl AsRef<OsStr>,
     args: impl IntoIterator<Item = T>,
-    become_pass: Option<&str>,
+    sudo: bool,
 ) -> anyhow::Result<ExitStatus> {
-    let mut cmd = match &become_pass {
-        Some(_) => {
-            let mut cmd = Command::new("sudo");
-            cmd.arg("--stdin");
-            cmd.arg("--");
-            cmd.arg(command);
-            cmd.stdin(Stdio::piped());
-            cmd
-        }
-        None => Command::new(command),
+    let mut cmd = if sudo {
+        let mut cmd = Command::new("sudo");
+        cmd.arg("--");
+        cmd.arg(command);
+        cmd
+    } else {
+        Command::new(command)
     };
 
-    cmd.args(args);
-    let mut child = cmd.spawn()?;
-    if let Some(pass) = become_pass {
-        println!("Running command as root");
-        let mut stdin = child.stdin.as_ref().unwrap();
-        stdin.write_all(pass.as_bytes())?;
-        stdin.write_all(b"\n")?;
-        stdin.flush()?;
-    }
-    let status = child.wait()?;
+    let status = cmd.args(args).spawn()?.wait()?;
+
     Ok(status)
 }
 
 pub fn install_pacman_packages<T: IntoIterator<Item = impl ToString>>(
     packages: T,
-    become_pass: Option<&str>,
+    sudo: bool,
 ) -> anyhow::Result<()> {
     println!("Installing pacman packages");
     let args = vec!["-Syu", "--noconfirm", "--needed"]
         .into_iter()
         .map(ToString::to_string)
         .chain(packages.into_iter().map(|item| item.to_string()));
-    let status = run_command("pacman", args, become_pass)?;
+    let status = run_command("pacman", args, sudo)?;
     if !status.success() {
         anyhow::bail!("Failed to install pacman packages");
     }
@@ -76,7 +66,7 @@ pub fn install_aur_packages<T: IntoIterator<Item = impl ToString>>(
         .into_iter()
         .map(ToString::to_string)
         .chain(packages.into_iter().map(|item| item.to_string()));
-    let status = run_command("paru", args, None)?;
+    let status = run_command("paru", args, false)?;
     if !status.success() {
         anyhow::bail!("Failed to install AUR packages");
     }
@@ -124,7 +114,7 @@ pub fn ch_passwd(user: impl ToString, password: impl ToString) -> anyhow::Result
 pub fn mk_groups(groups: impl Iterator<Item = impl ToString>) -> anyhow::Result<()> {
     for group in groups {
         println!("Creating group {}", group.to_string());
-        run_command("groupadd", [group.to_string()], None)?;
+        run_command("groupadd", [group.to_string()], false)?;
     }
     Ok(())
 }
@@ -158,7 +148,7 @@ pub fn create_user(username: &str, groups: &[&str], shell: &str) -> anyhow::Resu
             "--user-group",
             username,
         ],
-        None,
+        false,
     )?;
     if !code.success() {
         anyhow::bail!("Failed to create user {username}");
@@ -171,7 +161,7 @@ pub fn install_grub(
     efi_mountpoint: &str,
     bootloader_id: &str,
 ) -> anyhow::Result<()> {
-    install_pacman_packages(["grub", "efibootmgr", "os-prober"], None)?;
+    install_pacman_packages(["grub", "efibootmgr", "os-prober"], false)?;
     let code = run_command(
         "grub-install",
         [
@@ -182,22 +172,22 @@ pub fn install_grub(
             "--bootloader-id",
             bootloader_id,
         ],
-        None,
+        false,
     )?;
     if !code.success() {
         anyhow::bail!("Failed to install grub");
     }
-    let code = run_command("grub-mkconfig", ["-o", "/boot/grub/grub.cfg"], None)?;
+    let code = run_command("grub-mkconfig", ["-o", "/boot/grub/grub.cfg"], false)?;
     if !code.success() {
         anyhow::bail!("Failed to generate grub config");
     }
     Ok(())
 }
 
-pub fn enable_services(services: &[&str]) -> anyhow::Result<()> {
+pub fn enable_services(services: &[&str], sudo: bool) -> anyhow::Result<()> {
     println!("Enabling services:");
     for service in services {
-        let code = run_command("systemctl", ["enable", service], None)?;
+        let code = run_command("systemctl", ["enable", service], sudo)?;
         if !code.success() {
             anyhow::bail!("Failed to enable {service}");
         }
@@ -208,7 +198,16 @@ pub fn enable_services(services: &[&str]) -> anyhow::Result<()> {
 
 pub fn install_network_manager() -> anyhow::Result<()> {
     println!("Installing network manager");
-    install_pacman_packages(["networkmanager"], None)?;
-    enable_services(&["NetworkManager.service"])?;
+    install_pacman_packages(["networkmanager"], false)?;
+    enable_services(&["NetworkManager.service"], false)?;
+    Ok(())
+}
+
+pub fn self_install_chroot() -> anyhow::Result<()> {
+    run_command("cargo", ["build", "--release"], false)?;
+    std::fs::copy(
+        PathBuf::from("target/release").join(std::env!("CARGO_BIN_NAME")),
+        PathBuf::from("/usr/local/sbin").join(std::env!("CARGO_BIN_NAME")),
+    )?;
     Ok(())
 }
