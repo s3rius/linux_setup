@@ -1,0 +1,64 @@
+window {
+    margin: 5px;
+    background-color: #1D2021;
+    opacity: 0.9;
+    border-radius: 10;
+}
+
+#outer-box {
+    margin: 5px;
+    background-color: #1D2021;
+    border-radius: 10;
+}
+
+#input {
+    margin: 5px;
+    border: 2px #D65D0E !important;
+    background-color: #3C3836;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+
+#inner-box {
+    margin: 5px;
+    background-color: #3C3836;
+}
+
+#scroll {
+    margin: 5px;
+    font-size: 16px;
+    color: #D79921;
+    border-radius: 10;
+}
+
+#scroll label {
+    margin: 2px 0px;
+}
+
+#entry {
+    background-color: transparent;
+}
+
+#entry:selected {
+    border: 2px solid #D65D0E;
+}
+
+#img {
+    margin: 5px;
+}
+
+#img:selected {
+    /* background-color: white; */
+}
+
+#text {
+    margin: 5px;
+    border: none;
+    color: white;
+}
+
+#text:selected {
+    /* background-color: white; */
+}

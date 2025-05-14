@@ -1,0 +1,34 @@
+use crate::utils::{enable_services, install_pacman_packages};
+
+const HYPRLAND_PACKAGES: &'static [&'static str] = &[
+    "hyprland",
+    "hyprpaper",
+    "waybar",
+    "wofi",
+    "sddm",
+    "otf-font-awesome",
+    "qt6",
+    "xdg-desktop-portal-hyprland",
+    "pipewire",
+    "pipewire-v4l2",
+    "pipewire-pulse",
+    "wireplumber",
+    "grim",
+    "slurp",
+    "wl-clipboard",
+    "gtk-engine-murrine",
+    "network-manager-applet",
+    "noto-fonts",
+    "noto-fonts-cjk",
+    "noto-fonts-emoji",
+    "noto-fonts-extra",
+    "hyprlock",
+    "udiskie",
+    "cpio",
+];
+
+pub fn install_hyprland() -> anyhow::Result<()> {
+    install_pacman_packages(HYPRLAND_PACKAGES, true)?;
+    enable_services(&["sddm.service"], true)?;
+    Ok(())
+}

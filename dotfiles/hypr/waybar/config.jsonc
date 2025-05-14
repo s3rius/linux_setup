@@ -1,0 +1,55 @@
+// -*- mode: jsonc -*-
+{
+    "position": "top",
+    "height": 15, // Waybar height (to be removed for auto height)
+    // "spacing": 10, // Gaps between modules (4px)
+    "margin-top": 10,
+    "margin-left": 15,
+    "margin-right": 15,
+    "reload_style_on_change": true,
+    "reverse-direction": true,
+    // Choose the order of the modules
+    "modules-left": [
+        "pulseaudio",
+        "battery",
+        "cpu",
+        "hyprland/language",
+        "clock"
+    ],
+    "modules-center": [
+        "hyprland/workspaces"
+    ],
+    "modules-right": [
+	"hyprland/submap",
+        "tray"
+    ],
+    "pulseaudio": {
+        "format": "vol {volume}%",
+        "on-click": "pavucontrol"
+    },
+    "battery": {
+        "format": "bat {capacity}%"
+    },
+    "cpu": {
+        "format": "cpu {usage}%",
+        "tooltip": true
+    },
+    "tray": {
+        // "icon-size": 21,
+        "spacing": 10
+    },
+    "clock": {
+        // "timezone": "America/New_York",
+        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
+        "format-alt": "{:%Y-%m-%d %H:%M}"
+    },
+    "hyprland/language": {
+        "format": "{}",
+        "format-en": "en",
+        "format-ru": "ru",
+        "format-dk": "dk"
+    },
+    "hyprland/submap": {
+        "format": " {} "
+    }
+}

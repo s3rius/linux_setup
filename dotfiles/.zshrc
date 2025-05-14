@@ -3,7 +3,9 @@
 
 # Path to your oh-my-zsh installation.
 export ZSH="/home/$USER/.oh-my-zsh"
-export EDITOR=/bin/vim
+export EDITOR=/usr/bin/nvim
+export GOPATH="$HOME/.go"
+export RUST_BACKTRACE="1"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -69,10 +71,11 @@ COMPLETION_WAITING_DOTS="true"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git sudo docker autojump git-flow-completion)
+plugins=(git sudo docker autojump git-flow gpg-agent)
 
 source $ZSH/oh-my-zsh.sh
 alias ls=lsd
+alias vim=$EDITOR
 alias rcheck="cargo check && fd .rs -F | xargs touch && cargo clippy && cargo test"
 alias l="lsd -la"
 alias lg="lazygit"
@@ -90,9 +93,13 @@ alias vommit='git commit -sS'
 alias eat_shit='git pull origin "$(git branch | grep "\*" | cut -d " " -f2)"'
 alias cat="bat"
 alias dips='docker compose ps -q | xargs docker inspect -f "{{.Name}} {{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}"'
+alias мшь="$EDITOR"
+alias tf="terraform"
+alias vterm="vim -c \"startinsert\" -c \":term\""
 # User configuration
 
 # export MANPATH="/usr/local/man:$MANPATH"
+export AWS_DEFAULT_REGION="eu-west-1"
 
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
@@ -114,7 +121,23 @@ compinit
 autoload -U +X bashcompinit && bashcompinit
 autoload -U ~/.zfunc/*
 
-eval "$(pyenv init -)"
 source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+eval "$(mise activate zsh)"
 eval "$(starship init zsh)"
+# eval "$(mise activate zsh)"
+
+pya
+
+autoload -Uz compinit
+zstyle ':completion:*' menu select
+
+
+
+# pnpm
+export PNPM_HOME="/home/s3rius/.local/share/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end

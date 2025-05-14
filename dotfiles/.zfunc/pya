@@ -1,0 +1,29 @@
+#!/bin/zsh
+
+PATH_PARTS=()
+IFS="/" read -A PATH_PARTS <<< "$(pwd)"
+
+DIR=""
+
+for i in $PATH_PARTS
+do
+  DIR="${DIR}/${i}"
+  if [[ -e "${DIR}/.venv" ]]; then
+    emulate bash -c ". ${DIR}/.venv/bin/activate"
+    break
+  fi
+
+  if [[ -e "${i}/venv" ]]; then
+    emulate bash -c ". ${DIR}/venv/bin/activate"
+    break
+  fi
+
+  if [[ -e "${DIR}/pyproject.toml" ]]; then
+    if grep -q '\[tool.poetry\]' "${i}/pyproject.toml"; then
+      venv_path="$(poetry -C "${DIR}" env info -p | head -n1 | xargs)"
+      echo "Poetry found activating ..."
+      emulate bash -c ". ${venv_path}/bin/activate"
+      break
+    fi
+  fi
+done
