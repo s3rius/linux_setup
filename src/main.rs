@@ -119,8 +119,16 @@ fn main() -> anyhow::Result<()> {
         Cli::Sync => {
             sync_files()?;
         }
+        Cli::Copy => {
+            copy_files()?;
+        }
     }
 
+    Ok(())
+}
+
+fn copy_files() -> anyhow::Result<()> {
+    Dotfiles::copy(&DOTFILES_MAPPING)?;
     Ok(())
 }
 

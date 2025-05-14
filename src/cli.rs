@@ -49,6 +49,9 @@ pub enum Cli {
     Chroot(ChrootInstallArgs),
     /// Command to run on first boot.
     User(UserArgs),
+    /// Used to just copy dotfiles, without
+    /// installing anything.
+    Copy,
     /// Sync files from your PC with repo's dotfiles,
     /// accroding to the `DOTFILES_MAPPING`.
     Sync,
