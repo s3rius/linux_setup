@@ -195,6 +195,7 @@ fn chroot_install(args: ChrootInstallArgs) -> anyhow::Result<()> {
     install_pacman_packages(["sudo"], None)?;
     install_pacman_packages(PACMAN_PACKAGES, None)?;
     // Setting currene timezone.
+    println!("Setting timezone to {}", args.timezone);
     std::fs::remove_file("/etc/localtime")?;
     std::os::unix::fs::symlink(
         format!("/usr/share/zoneinfo/{}", args.timezone),
