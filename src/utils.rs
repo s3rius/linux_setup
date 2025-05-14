@@ -69,11 +69,18 @@ pub fn install_pacman_packages<T: IntoIterator<Item = impl ToString>>(
     Ok(())
 }
 
-pub fn install_aur_packages<T: IntoIterator<Item = impl ToString>>(packages: T) {
-    let args = vec!["-Syu", "--noconfirm"]
+pub fn install_aur_packages<T: IntoIterator<Item = impl ToString>>(
+    packages: T,
+) -> anyhow::Result<()> {
+    let args = vec!["-Syu", "--noconfirm", "--needed"]
         .into_iter()
         .map(ToString::to_string)
         .chain(packages.into_iter().map(|item| item.to_string()));
+    let status = run_command("paru", args, None)?;
+    if !status.success() {
+        anyhow::bail!("Failed to install AUR packages");
+    }
+    Ok(())
 }
 
 pub fn uncomment_locales(locales: impl Iterator<Item = impl ToString>) -> anyhow::Result<()> {

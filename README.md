@@ -34,15 +34,14 @@ Now we need to install python and other packages.
 
 ```bash
 # Install packages
-pacman -S python python-pip git vim
+pacman -S rustup
+rustup install stable
 
 # Clone this repo
-git clone https://github.com/s3rius/linux_setup.git /home/linux_setup
-cd /home/linux_setup
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-chmod -R 777 /home/linux_setup
+git clone https://github.com/s3rius/linux_setup.git /tmp/linux_setup
+cd /tmp/linux_setup
+# Please adjust this command with CLI argument. See --help for possible config values.
+cargo run chroot
 ```
 
 Now you need to update vars file according to your needs.

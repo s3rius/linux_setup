@@ -3,9 +3,11 @@ use std::{cell::LazyCell, collections::HashMap, fs::read_to_string, io::Write, p
 use clap::Parser;
 use cli::{ChrootInstallArgs, Cli};
 use custom_package::CustomPackage;
+use dotfiles::Dotfiles;
 use utils::{
-    ch_passwd, create_user, get_password, install_grub, install_network_manager,
-    install_pacman_packages, mk_groups, run_command, uncomment_locales, update_sudoers,
+    ch_passwd, create_user, enable_services, get_password, install_aur_packages, install_grub,
+    install_network_manager, install_pacman_packages, mk_groups, run_command, uncomment_locales,
+    update_sudoers,
 };
 
 mod cli;
@@ -120,13 +122,32 @@ fn main() -> anyhow::Result<()> {
             chroot_install(args)?;
         }
         Cli::User {} => {
-            unimplemented!()
+            user_install()?;
         }
         Cli::Sync {} => {
             sync_files()?;
         }
     }
 
+    Ok(())
+}
+
+fn user_install() -> anyhow::Result<()> {
+    println!("Installing paru for AUR packages.");
+    CustomPackage::GitPackage {
+        url: "https://aur.archlinux.org/paru.git",
+        build_command: "yes | makepkg -fsri",
+    }
+    .install()?;
+
+    install_aur_packages(AUR_PACKAGES)?;
+    for package in CUSTOM_PACKAGES {
+        package.install()?;
+    }
+
+    Dotfiles::copy(&DOTFILES_MAPPING)?;
+
+    enable_services(SERVICES_TO_ENABLE)?;
     Ok(())
 }
 
