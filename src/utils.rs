@@ -225,7 +225,18 @@ pub fn self_install_user(repo_url: &str, config_path: &str) -> anyhow::Result<()
         .wait()?;
 
     // Remove previous chroot binary from the system.
-    std::fs::remove_file(PathBuf::from("/usr/local/sbin").join(std::env!("CARGO_BIN_NAME"))).ok();
+    run_command(
+        "rm",
+        [
+            "-f",
+            PathBuf::from("/usr/local/sbin")
+                .join(std::env!("CARGO_BIN_NAME"))
+                .display()
+                .to_string()
+                .as_str(),
+        ],
+        true,
+    )?;
 
     Ok(())
 }
