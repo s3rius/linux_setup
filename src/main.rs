@@ -1,13 +1,13 @@
 use std::{cell::LazyCell, collections::HashMap, fs::read_to_string, io::Write, path::PathBuf};
 
 use clap::Parser;
-use cli::{ChrootInstallArgs, Cli};
+use cli::{ChrootInstallArgs, Cli, UserArgs};
 use custom_package::CustomPackage;
 use dotfiles::Dotfiles;
 use utils::{
     ch_passwd, create_user, enable_services, get_password, install_aur_packages, install_grub,
     install_network_manager, install_pacman_packages, mk_groups, run_command, self_install_chroot,
-    uncomment_locales, update_sudoers,
+    self_install_user, uncomment_locales, update_sudoers,
 };
 
 mod cli;
@@ -102,7 +102,7 @@ const PACMAN_PACKAGES: &'static [&'static str] = &[
 
 const CUSTOM_PACKAGES: &'static [CustomPackage] = &[CustomPackage::GitPackage {
     url: "https://github.com/robbyrussell/oh-my-zsh.git",
-    build_command: "sh ./tools/install.sh",
+    build_command: "sh ./tools/install.sh --unattended",
 }];
 const SERVICES_TO_ENABLE: &'static [&'static str] = &["docker.service"];
 
@@ -112,10 +112,10 @@ fn main() -> anyhow::Result<()> {
         Cli::Chroot(args) => {
             chroot_install(args)?;
         }
-        Cli::User {} => {
-            user_install()?;
+        Cli::User(args) => {
+            user_install(args)?;
         }
-        Cli::Sync {} => {
+        Cli::Sync => {
             sync_files()?;
         }
     }
@@ -123,7 +123,7 @@ fn main() -> anyhow::Result<()> {
     Ok(())
 }
 
-fn user_install() -> anyhow::Result<()> {
+fn user_install(args: UserArgs) -> anyhow::Result<()> {
     println!("Installing paru for AUR packages.");
     run_command("rustup", ["install", "stable"], false)?;
 
@@ -153,6 +153,13 @@ fn user_install() -> anyhow::Result<()> {
     Dotfiles::copy(&DOTFILES_MAPPING)?;
 
     enable_services(SERVICES_TO_ENABLE, true)?;
+    let configs_path = if let Some(path) = &args.configs_path {
+        path
+    } else {
+        ""
+    };
+    self_install_user(&args.repo_url, configs_path)?;
+
     Ok(())
 }
 

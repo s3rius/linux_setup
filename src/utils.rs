@@ -211,3 +211,21 @@ pub fn self_install_chroot() -> anyhow::Result<()> {
     )?;
     Ok(())
 }
+
+pub fn self_install_user(repo_url: &str, config_path: &str) -> anyhow::Result<()> {
+    let target_dir = shellexpand::full(config_path)?.to_string();
+    // Clone the repo to the target directory
+    run_command("git", ["clone", repo_url, &target_dir], false)?;
+
+    // Install the binary from there.
+    Command::new("cargo")
+        .args(["install", "--path", "."])
+        .current_dir(&target_dir)
+        .spawn()?
+        .wait()?;
+
+    // Remove previous chroot binary from the system.
+    std::fs::remove_file(PathBuf::from("/usr/local/sbin").join(std::env!("CARGO_BIN_NAME"))).ok();
+
+    Ok(())
+}
