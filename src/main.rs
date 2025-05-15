@@ -117,8 +117,8 @@ fn main() -> anyhow::Result<()> {
         Cli::User(args) => {
             user_install(args)?;
         }
-        Cli::Sync => {
-            sync_files()?;
+        Cli::Sync { commit, push } => {
+            sync_files(commit, push)?;
         }
         Cli::Copy => {
             copy_files()?;
@@ -174,7 +174,7 @@ fn user_install(args: UserArgs) -> anyhow::Result<()> {
     Ok(())
 }
 
-fn sync_files() -> anyhow::Result<()> {
+fn sync_files(commit: bool, push: bool) -> anyhow::Result<()> {
     let main_folder = env!("CARGO_MANIFEST_DIR");
     let dotfiles_folder = PathBuf::from(format!("{main_folder}/dotfiles"));
     println!("Syncing dotfiles for {dotfiles_folder:?}");
@@ -224,6 +224,18 @@ fn sync_files() -> anyhow::Result<()> {
         }
         nvim_init.write(line.as_bytes())?;
         nvim_init.write(b"\n")?;
+    }
+
+    if commit {
+        run_command("git", ["-C", main_folder, "add", "."], false)?;
+        run_command(
+            "git",
+            ["-C", main_folder, "commit", "-m", "Sync dotfiles"],
+            false,
+        )?;
+    }
+    if push {
+        run_command("git", ["-C", main_folder, "push"], false)?;
     }
 
     Ok(())

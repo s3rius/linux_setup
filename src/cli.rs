@@ -54,5 +54,10 @@ pub enum Cli {
     Copy,
     /// Sync files from your PC with repo's dotfiles,
     /// accroding to the `DOTFILES_MAPPING`.
-    Sync,
+    Sync {
+        #[arg(short, long, default_value = "false")]
+        commit: bool,
+        #[arg(short, long, default_value = "false")]
+        push: bool,
+    },
 }
