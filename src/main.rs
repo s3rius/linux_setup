@@ -25,7 +25,7 @@ const DOTFILES_MAPPING: LazyCell<HashMap<&'static str, &'static str>> = LazyCell
     mapping.insert(".zfunc", "$HOME/.zfunc");
     mapping.insert("hypr", "$HOME/.config/hypr");
     mapping.insert("nvim", "$HOME/.config/nvim");
-    mapping.insert("themes", "$HOME/.themes");
+    mapping.insert(".themes", "$HOME/.themes");
     mapping
 });
 
