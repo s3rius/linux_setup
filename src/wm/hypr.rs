@@ -26,6 +26,7 @@ const HYPRLAND_PACKAGES: &'static [&'static str] = &[
     "hyprlock",
     "udiskie",
     "cpio",
+    "uwsm",
 ];
 
 pub fn install_hyprland() -> anyhow::Result<()> {

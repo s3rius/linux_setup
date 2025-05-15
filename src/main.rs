@@ -26,7 +26,6 @@ const DOTFILES_MAPPING: LazyCell<HashMap<&'static str, &'static str>> = LazyCell
     mapping.insert(".zfunc", "~/.zfunc");
     mapping.insert("hypr", "~/.config/hypr");
     mapping.insert("nvim", "~/.config/nvim");
-    mapping.insert(".themes", "~/.themes");
     mapping.insert("wallpapers", "~/Pictures/wallpapers");
     mapping.insert(".gitconfig", "~/.gitconfig");
     mapping
@@ -94,6 +93,7 @@ const PACMAN_PACKAGES: &'static [&'static str] = &[
     "curl",
     "mpv",
     "java-runtime-common",
+    "man-db",
     // Lang servers
     "rust-analyzer",
     "lua-language-server",
@@ -107,14 +107,24 @@ const PACMAN_PACKAGES: &'static [&'static str] = &[
     "gopls",
 ];
 
-const CUSTOM_PACKAGES: &'static [CustomPackage] = &[CustomPackage::GitPackage {
-    url: "https://github.com/robbyrussell/oh-my-zsh.git",
-    build_command: "sh ./tools/install.sh --unattended",
-    skip_if: || {
-        let path = PathBuf::from(shellexpand::full("~/.oh-my-zsh")?.to_string());
-        Ok(path.exists())
+const CUSTOM_PACKAGES: &'static [CustomPackage] = &[
+    CustomPackage::GitPackage {
+        url: "https://github.com/robbyrussell/oh-my-zsh.git",
+        build_command: "sh ./tools/install.sh --unattended",
+        skip_if: || {
+            let path = PathBuf::from(shellexpand::full("~/.oh-my-zsh")?.to_string());
+            Ok(path.exists())
+        },
     },
-}];
+    CustomPackage::GitPackage {
+        url: "https://github.com/Fausto-Korpsvart/Gruvbox-GTK-Theme.git",
+        build_command: "sh themes/install.sh && cp -r icons/ ~/.local/share/",
+        skip_if: || {
+            let path = PathBuf::from(shellexpand::full("~/.themes/Gruvbox-Dark")?.to_string());
+            Ok(path.exists())
+        },
+    },
+];
 const SERVICES_TO_ENABLE: &'static [&'static str] = &["docker.service"];
 
 fn main() -> anyhow::Result<()> {
