@@ -59,6 +59,7 @@ const PACMAN_PACKAGES: &'static [&'static str] = &[
     "sd",
     "fd",
     "ripgrep",
+    "tig",
     // Shell shit
     "zsh",
     "zsh-autosuggestions",
