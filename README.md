@@ -34,14 +34,16 @@ Now we need to install python and other packages.
 
 ```bash
 # Install packages
-pacman -S rustup
+pacman -S rustup git git-lfs
 rustup install stable
+# I use git-lfs for images. So you should too.
+git lfs install
 
 # Clone this repo
 git clone https://github.com/s3rius/linux_setup.git /tmp/linux_setup
 cd /tmp/linux_setup
 # Please adjust this command with CLI argument. See --help for possible config values.
-cargo run chroot
+cargo run chroot --username s3rius
 ```
 
 Once you run this command, you can safely reboot to your newly created system. On your first boot,

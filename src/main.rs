@@ -237,7 +237,7 @@ fn chroot_install(args: ChrootInstallArgs) -> anyhow::Result<()> {
     let user_password = get_password("user")?;
     let root_password = get_password("root")?;
 
-    install_pacman_packages(["sudo", "rustup"], false)?;
+    install_pacman_packages(["sudo", "rustup", "git-lfs"], false)?;
     install_pacman_packages(PACMAN_PACKAGES, false)?;
     // Setting currene timezone.
     println!("Setting timezone to {}", args.timezone);
