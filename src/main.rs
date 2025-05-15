@@ -22,7 +22,7 @@ const DOTFILES_MAPPING: LazyCell<HashMap<&'static str, &'static str>> = LazyCell
     let mut mapping = HashMap::new();
     mapping.insert(".zshrc", "~/.zshrc");
     mapping.insert(".zshenv", "~/.zshenv");
-    mapping.insert("kitty.conf", "~/.config/kitty/kitty.conf");
+    mapping.insert("kitty", "~/.config/kitty");
     mapping.insert(".zfunc", "~/.zfunc");
     mapping.insert("hypr", "~/.config/hypr");
     mapping.insert("nvim", "~/.config/nvim");
@@ -182,6 +182,8 @@ pub fn apply() -> anyhow::Result<()> {
 fn sync_files(commit: bool, push: bool) -> anyhow::Result<()> {
     let main_folder = env!("CARGO_MANIFEST_DIR");
     let dotfiles_folder = PathBuf::from(format!("{main_folder}/dotfiles"));
+    std::fs::remove_dir_all(&dotfiles_folder).ok();
+    std::fs::create_dir_all(&dotfiles_folder).ok();
     println!("Syncing dotfiles for {dotfiles_folder:?}");
     for (local_path, sys_path) in DOTFILES_MAPPING.iter() {
         let sys_path = PathBuf::from(shellexpand::full(sys_path)?.to_string());
@@ -222,6 +224,7 @@ fn sync_files(commit: bool, push: bool) -> anyhow::Result<()> {
             std::fs::remove_file(file.path())?;
         }
     }
+    std::fs::remove_file(dotfiles_folder.join("kitty/kitty.conf.bak")).ok();
     std::fs::remove_file(dotfiles_folder.join("nvim/lua/config/intree.lua")).ok();
     // Remove intree from nvim init.
     let init_contents = read_to_string(dotfiles_folder.join("nvim/init.lua"))?;
