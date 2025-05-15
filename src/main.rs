@@ -95,6 +95,7 @@ const PACMAN_PACKAGES: &'static [&'static str] = &[
     "mpv",
     "java-runtime-common",
     "man-db",
+    "kvantum",
     // Lang servers
     "rust-analyzer",
     "lua-language-server",
@@ -119,9 +120,19 @@ const CUSTOM_PACKAGES: &'static [CustomPackage] = &[
     },
     CustomPackage::GitPackage {
         url: "https://github.com/vinceliuice/Colloid-gtk-theme.git",
-        build_command: "sh install.sh --theme orange --tweaks gruvbox",
+        build_command: "sh install.sh --theme orange --tweaks black --tweaks gruvbox",
         skip_if: || {
-            let path = PathBuf::from(shellexpand::full("~/.themes/Colloid-Orange-Gruvbox")?.to_string());
+            let path = PathBuf::from(
+                shellexpand::full("~/.local/share/themes/Colloid-Orange-Gruvbox")?.to_string(),
+            );
+            Ok(path.exists())
+        },
+    },
+    CustomPackage::GitPackage {
+        url: "https://github.com/vinceliuice/Colloid-kde.git",
+        build_command: "sh install.sh",
+        skip_if: || {
+            let path = PathBuf::from(shellexpand::full("~/.config/Kvantum/Colloid")?.to_string());
             Ok(path.exists())
         },
     },
