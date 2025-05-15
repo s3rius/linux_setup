@@ -121,7 +121,7 @@ const CUSTOM_PACKAGES: &'static [CustomPackage] = &[
         url: "https://github.com/vinceliuice/Colloid-gtk-theme.git",
         build_command: "sh install.sh --theme orange --tweaks gruvbox",
         skip_if: || {
-            let path = PathBuf::from(shellexpand::full("~/.themes/Colloid")?.to_string());
+            let path = PathBuf::from(shellexpand::full("~/.themes/Colloid-Orange-Gruvbox")?.to_string());
             Ok(path.exists())
         },
     },
