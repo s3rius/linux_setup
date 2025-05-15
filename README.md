@@ -34,10 +34,8 @@ Now we need to install python and other packages.
 
 ```bash
 # Install packages
-pacman -S rustup git git-lfs
+pacman -S rustup git
 rustup install stable
-# I use git-lfs for images. So you should too.
-git lfs install
 
 # Clone this repo
 git clone https://github.com/s3rius/linux_setup.git /tmp/linux_setup
