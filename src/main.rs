@@ -131,8 +131,8 @@ fn main() -> anyhow::Result<()> {
         Cli::Pull => {
             pull()?;
         }
-        Cli::Push => {
-            push()?;
+        Cli::Apply => {
+            apply()?;
         }
     }
 
@@ -184,11 +184,16 @@ pub fn pull() -> anyhow::Result<()> {
     let main_folder = env!("CARGO_MANIFEST_DIR");
     git_pull(main_folder)?;
     install_self_bin(main_folder)?;
+    run_command(std::env!("CARGO_BIN_NAME"), ["apply"], false)?;
 
     Ok(())
 }
 
-pub fn push() -> anyhow::Result<()> {
+pub fn apply() -> anyhow::Result<()> {
+    install_pacman_packages(PACMAN_PACKAGES, true)?;
+    install_aur_packages(AUR_PACKAGES)?;
+    Dotfiles::copy(&DOTFILES_MAPPING)?;
+    enable_services(SERVICES_TO_ENABLE, true)?;
     Ok(())
 }
 

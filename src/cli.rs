@@ -61,5 +61,5 @@ pub enum Cli {
         push: bool,
     },
     Pull,
-    Push,
+    Apply,
 }
