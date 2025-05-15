@@ -134,6 +134,7 @@ fn copy_files() -> anyhow::Result<()> {
 }
 
 fn user_install(args: UserArgs) -> anyhow::Result<()> {
+    run_command("git", ["lfs", "install"], false)?;
     println!("Installing paru for AUR packages.");
     run_command("rustup", ["install", "stable"], false)?;
 
