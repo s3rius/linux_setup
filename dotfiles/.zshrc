@@ -135,7 +135,7 @@ zstyle ':completion:*' menu select
 
 
 # pnpm
-export PNPM_HOME="/home/s3rius/.local/share/pnpm"
+export PNPM_HOME="/home/$USER/.local/share/pnpm"
 case ":$PATH:" in
   *":$PNPM_HOME:"*) ;;
   *) export PATH="$PNPM_HOME:$PATH" ;;
