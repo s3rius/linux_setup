@@ -110,43 +110,28 @@ const PACMAN_PACKAGES: &'static [&'static str] = &[
 const CUSTOM_PACKAGES: &'static [CustomPackage] = &[CustomPackage::GitPackage {
     url: "https://github.com/robbyrussell/oh-my-zsh.git",
     build_command: "sh ./tools/install.sh --unattended",
+    skip_if: || {
+        let path = PathBuf::from(shellexpand::full("~/.oh-my-zsh")?.to_string());
+        Ok(path.exists())
+    },
 }];
 const SERVICES_TO_ENABLE: &'static [&'static str] = &["docker.service"];
 
 fn main() -> anyhow::Result<()> {
     let args = Cli::parse();
     match args {
-        Cli::Chroot(args) => {
-            chroot_install(args)?;
-        }
-        Cli::User(args) => {
-            user_install(args)?;
-        }
-        Cli::Sync { commit, push } => {
-            sync_files(commit, push)?;
-        }
-        Cli::Copy => {
-            copy_files()?;
-        }
-        Cli::Pull => {
-            pull()?;
-        }
-        Cli::Apply => {
-            apply()?;
-        }
+        Cli::Chroot(args) => chroot_install(args)?,
+        Cli::User(args) => user_install(args)?,
+        Cli::Sync { commit, push } => sync_files(commit, push)?,
+        Cli::Pull => pull()?,
+        Cli::Apply => apply()?,
     }
-
-    Ok(())
-}
-
-fn copy_files() -> anyhow::Result<()> {
-    Dotfiles::copy(&DOTFILES_MAPPING)?;
     Ok(())
 }
 
 fn user_install(args: UserArgs) -> anyhow::Result<()> {
-    run_command("git", ["lfs", "install"], false)?;
     println!("Installing paru for AUR packages.");
+    run_command("git", ["lfs", "install"], false)?;
     run_command("rustup", ["install", "stable"], false)?;
 
     let arch = if cfg!(target_arch = "x86_64") {
@@ -167,14 +152,8 @@ fn user_install(args: UserArgs) -> anyhow::Result<()> {
 
     wm::hypr::install_hyprland()?;
 
-    install_aur_packages(AUR_PACKAGES)?;
-    for package in CUSTOM_PACKAGES {
-        package.install()?;
-    }
+    apply()?;
 
-    Dotfiles::copy(&DOTFILES_MAPPING)?;
-
-    enable_services(SERVICES_TO_ENABLE, true)?;
     self_install_user(&args.repo_url, &args.configs_path)?;
 
     Ok(())
@@ -192,6 +171,9 @@ pub fn pull() -> anyhow::Result<()> {
 pub fn apply() -> anyhow::Result<()> {
     install_pacman_packages(PACMAN_PACKAGES, true)?;
     install_aur_packages(AUR_PACKAGES)?;
+    for package in CUSTOM_PACKAGES {
+        package.install()?;
+    }
     Dotfiles::copy(&DOTFILES_MAPPING)?;
     enable_services(SERVICES_TO_ENABLE, true)?;
     Ok(())

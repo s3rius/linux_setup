@@ -49,9 +49,6 @@ pub enum Cli {
     Chroot(ChrootInstallArgs),
     /// Command to run on first boot.
     User(UserArgs),
-    /// Used to just copy dotfiles, without
-    /// installing anything.
-    Copy,
     /// Sync files from your PC with repo's dotfiles,
     /// accroding to the `DOTFILES_MAPPING`.
     Sync {
@@ -60,6 +57,13 @@ pub enum Cli {
         #[arg(short, long, default_value = "false")]
         push: bool,
     },
+    /// Pull files from the repo.
+    /// and apply them to your system.
+    ///
+    /// This command will install pacman packages, aur packages
+    /// and will copy dotfiles.
     Pull,
+    /// Apply files from the repo. Used by pull, but can also be used
+    /// to apply files from the repo manually.
     Apply,
 }

@@ -6,6 +6,7 @@ pub enum CustomPackage<'a> {
     GitPackage {
         url: &'a str,
         build_command: &'a str,
+        skip_if: fn() -> anyhow::Result<bool>,
     },
     HttpFile {
         url: &'a str,
@@ -20,7 +21,15 @@ impl<'a> CustomPackage<'a> {
         let build_dir = format!("/tmp/build_{}", name);
 
         match self {
-            CustomPackage::GitPackage { url, build_command } => {
+            CustomPackage::GitPackage {
+                url,
+                build_command,
+                skip_if,
+            } => {
+                if skip_if()? {
+                    println!("Skipping custom package installation");
+                    return Ok(());
+                }
                 println!("Installing custom package from git URL: {}", url);
                 run_command("git", ["clone", url, &build_dir], false)?;
                 let code = std::process::Command::new("bash")
