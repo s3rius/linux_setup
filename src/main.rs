@@ -27,6 +27,7 @@ const DOTFILES_MAPPING: LazyCell<HashMap<&'static str, &'static str>> = LazyCell
     mapping.insert("nvim", "~/.config/nvim");
     mapping.insert(".themes", "~/.themes");
     mapping.insert("wallpapers", "~/Pictures/wallpapers");
+    mapping.insert(".gitconfig", "~/.gitconfig");
     mapping
 });
 
