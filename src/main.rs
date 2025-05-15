@@ -56,6 +56,7 @@ const PACMAN_PACKAGES: &'static [&'static str] = &[
     "docker",
     "lsd",
     "mise",
+    "usage",
     "kubectl",
     "sd",
     "fd",
