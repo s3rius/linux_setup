@@ -56,6 +56,9 @@ const PACMAN_PACKAGES: &'static [&'static str] = &[
     "lsd",
     "mise",
     "kubectl",
+    "sd",
+    "fd",
+    "ripgrep",
     // Shell shit
     "zsh",
     "zsh-autosuggestions",
