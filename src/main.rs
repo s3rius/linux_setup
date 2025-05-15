@@ -118,10 +118,10 @@ const CUSTOM_PACKAGES: &'static [CustomPackage] = &[
         },
     },
     CustomPackage::GitPackage {
-        url: "https://github.com/Fausto-Korpsvart/Gruvbox-GTK-Theme.git",
-        build_command: "sh themes/install.sh && cp -r icons/ ~/.local/share/",
+        url: "https://github.com/vinceliuice/Colloid-gtk-theme.git",
+        build_command: "sh install.sh --theme orange --tweaks gruvbox",
         skip_if: || {
-            let path = PathBuf::from(shellexpand::full("~/.themes/Gruvbox-Dark")?.to_string());
+            let path = PathBuf::from(shellexpand::full("~/.themes/Colloid")?.to_string());
             Ok(path.exists())
         },
     },
