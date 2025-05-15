@@ -37,7 +37,6 @@ const EXTRA_GROUPS: &'static [&'static str] = &["docker", "wheel"];
 const AUR_PACKAGES: &'static [&'static str] = &[
     // Randoms
     "autojump-rs",
-    "deadd-notification-center-bin",
     "zen-browser-bin",
     // Fonts
     "ttf-symbola",

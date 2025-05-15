@@ -4,6 +4,7 @@ const HYPRLAND_PACKAGES: &'static [&'static str] = &[
     "hyprland",
     "hyprpaper",
     "waybar",
+    "swaync",
     "wofi",
     "sddm",
     "otf-font-awesome",
