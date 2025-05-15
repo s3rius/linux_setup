@@ -182,6 +182,13 @@ fn sync_files(commit: bool, push: bool) -> anyhow::Result<()> {
     for (local_path, sys_path) in DOTFILES_MAPPING.iter() {
         let sys_path = PathBuf::from(shellexpand::full(sys_path)?.to_string());
         let mut target_path = dotfiles_folder.join(local_path);
+        if target_path.exists() {
+            if target_path.is_dir() {
+                std::fs::remove_dir_all(&target_path).ok();
+            } else {
+                std::fs::remove_file(&target_path).ok();
+            }
+        }
         println!(
             "Copying {} to {}",
             sys_path.display(),
