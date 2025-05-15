@@ -19,13 +19,14 @@ mod wm;
 const PARU_VERSION: &str = "v2.0.4";
 const DOTFILES_MAPPING: LazyCell<HashMap<&'static str, &'static str>> = LazyCell::new(|| {
     let mut mapping = HashMap::new();
-    mapping.insert(".zshrc", "$HOME/.zshrc");
-    mapping.insert(".zshenv", "$HOME/.zshenv");
-    mapping.insert("kitty.conf", "$HOME/.config/kitty/kitty.conf");
-    mapping.insert(".zfunc", "$HOME/.zfunc");
-    mapping.insert("hypr", "$HOME/.config/hypr");
-    mapping.insert("nvim", "$HOME/.config/nvim");
-    mapping.insert(".themes", "$HOME/.themes");
+    mapping.insert(".zshrc", "~/.zshrc");
+    mapping.insert(".zshenv", "~/.zshenv");
+    mapping.insert("kitty.conf", "~/.config/kitty/kitty.conf");
+    mapping.insert(".zfunc", "~/.zfunc");
+    mapping.insert("hypr", "~/.config/hypr");
+    mapping.insert("nvim", "~/.config/nvim");
+    mapping.insert(".themes", "~/.themes");
+    mapping.insert("wallpapers", "~/Pictures/wallpapers");
     mapping
 });
 
