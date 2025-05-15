@@ -212,17 +212,25 @@ pub fn self_install_chroot() -> anyhow::Result<()> {
     Ok(())
 }
 
+pub fn install_self_bin(project: &str) -> anyhow::Result<()> {
+    let code = Command::new("cargo")
+        .args(["install", "--path", "."])
+        .current_dir(&project)
+        .spawn()?
+        .wait()?;
+    if !code.success() {
+        anyhow::bail!("Failed to install self bin");
+    }
+    Ok(())
+}
+
 pub fn self_install_user(repo_url: &str, config_path: &str) -> anyhow::Result<()> {
     let target_dir = shellexpand::full(config_path)?.to_string();
     // Clone the repo to the target directory
     run_command("git", ["clone", repo_url, &target_dir], false)?;
 
     // Install the binary from there.
-    Command::new("cargo")
-        .args(["install", "--path", "."])
-        .current_dir(&target_dir)
-        .spawn()?
-        .wait()?;
+    install_self_bin(&target_dir)?;
 
     // Remove previous chroot binary from the system.
     run_command(
@@ -239,4 +247,17 @@ pub fn self_install_user(repo_url: &str, config_path: &str) -> anyhow::Result<()
     )?;
 
     Ok(())
+}
+
+pub fn git_pull(repo: &str) -> anyhow::Result<ExitStatus> {
+    run_command("git", ["-C", repo, "pull"], false).into()
+}
+
+pub fn git_push(repo: &str) -> anyhow::Result<ExitStatus> {
+    run_command("git", ["-C", repo, "push"], false).into()
+}
+
+pub fn git_commit(repo: &str, message: &str) -> anyhow::Result<ExitStatus> {
+    run_command("git", ["-C", repo, "add", "."], false)?;
+    run_command("git", ["-C", repo, "commit", "-m", message], false).into()
 }

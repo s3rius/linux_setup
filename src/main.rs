@@ -5,9 +5,10 @@ use cli::{ChrootInstallArgs, Cli, UserArgs};
 use custom_package::CustomPackage;
 use dotfiles::Dotfiles;
 use utils::{
-    ch_passwd, create_user, enable_services, get_password, install_aur_packages, install_grub,
-    install_network_manager, install_pacman_packages, mk_groups, run_command, self_install_chroot,
-    self_install_user, uncomment_locales, update_sudoers,
+    ch_passwd, create_user, enable_services, get_password, git_commit, git_pull, git_push,
+    install_aur_packages, install_grub, install_network_manager, install_pacman_packages,
+    install_self_bin, mk_groups, run_command, self_install_chroot, self_install_user,
+    uncomment_locales, update_sudoers,
 };
 
 mod cli;
@@ -127,6 +128,12 @@ fn main() -> anyhow::Result<()> {
         Cli::Copy => {
             copy_files()?;
         }
+        Cli::Pull => {
+            pull()?;
+        }
+        Cli::Push => {
+            push()?;
+        }
     }
 
     Ok(())
@@ -168,13 +175,20 @@ fn user_install(args: UserArgs) -> anyhow::Result<()> {
     Dotfiles::copy(&DOTFILES_MAPPING)?;
 
     enable_services(SERVICES_TO_ENABLE, true)?;
-    let configs_path = if let Some(path) = &args.configs_path {
-        path
-    } else {
-        ""
-    };
-    self_install_user(&args.repo_url, configs_path)?;
+    self_install_user(&args.repo_url, &args.configs_path)?;
 
+    Ok(())
+}
+
+pub fn pull() -> anyhow::Result<()> {
+    let main_folder = env!("CARGO_MANIFEST_DIR");
+    git_pull(main_folder)?;
+    install_self_bin(main_folder)?;
+
+    Ok(())
+}
+
+pub fn push() -> anyhow::Result<()> {
     Ok(())
 }
 
@@ -238,15 +252,10 @@ fn sync_files(commit: bool, push: bool) -> anyhow::Result<()> {
     }
 
     if commit {
-        run_command("git", ["-C", main_folder, "add", "."], false)?;
-        run_command(
-            "git",
-            ["-C", main_folder, "commit", "-m", "Sync dotfiles"],
-            false,
-        )?;
+        git_commit(main_folder, "Sync dotfiles")?;
     }
     if push {
-        run_command("git", ["-C", main_folder, "push"], false)?;
+        git_push(main_folder)?;
     }
 
     Ok(())

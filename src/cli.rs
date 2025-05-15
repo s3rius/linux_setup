@@ -39,7 +39,7 @@ pub struct UserArgs {
     ///
     /// Defeaults to $HOME/.config/linux_setup.
     #[arg(long, default_value = "$HOME/.config/linux_setup")]
-    pub configs_path: Option<String>,
+    pub configs_path: String,
 }
 
 #[derive(clap::Parser)]
@@ -60,4 +60,6 @@ pub enum Cli {
         #[arg(short, long, default_value = "false")]
         push: bool,
     },
+    Pull,
+    Push,
 }
