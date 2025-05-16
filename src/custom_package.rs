@@ -11,6 +11,7 @@ pub enum CustomPackage<'a> {
     HttpFile {
         url: &'a str,
         install_command: &'a str,
+        skip_if: fn() -> anyhow::Result<bool>,
     },
 }
 
@@ -45,7 +46,12 @@ impl<'a> CustomPackage<'a> {
             CustomPackage::HttpFile {
                 url,
                 install_command,
+                skip_if,
             } => {
+                if skip_if()? {
+                    println!("Skipping custom package installation");
+                    return Ok(());
+                }
                 println!("Installing custom package from HTTP URL: {}", url);
                 std::fs::create_dir_all(&build_dir)?;
                 let code = std::process::Command::new("wget")

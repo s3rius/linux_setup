@@ -123,9 +123,7 @@ const CUSTOM_PACKAGES: &'static [CustomPackage] = &[
         url: "https://github.com/Fausto-Korpsvart/Gruvbox-GTK-Theme.git",
         build_command: "sh themes/install.sh --tweaks black --libadwaita && cp -r ./icons ~/.local/share",
         skip_if: || {
-            let path = PathBuf::from(
-                shellexpand::full("~/.themes/Gruvbox-Dark")?.to_string(),
-            );
+            let path = PathBuf::from(shellexpand::full("~/.themes/Gruvbox-Dark")?.to_string());
             Ok(path.exists())
         },
     },
@@ -136,6 +134,11 @@ const CUSTOM_PACKAGES: &'static [CustomPackage] = &[
             let path = PathBuf::from(shellexpand::full("~/.config/Kvantum/Colloid")?.to_string());
             Ok(path.exists())
         },
+    },
+    CustomPackage::HttpFile {
+        url: "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip",
+        install_command: "unzip awscli-exe-linux-x86_64.zip && sudo ./aws/install",
+        skip_if: || Ok(PathBuf::from("/usr/local/bin/aws").exists()),
     },
 ];
 const SERVICES_TO_ENABLE: &'static [&'static str] = &["docker.service"];
@@ -170,6 +173,7 @@ fn user_install(args: UserArgs) -> anyhow::Result<()> {
     CustomPackage::HttpFile {
         url: format!("https://github.com/Morganamilo/paru/releases/download/{PARU_VERSION}/paru-{PARU_VERSION}-{arch}.tar.zst").as_str(),
         install_command: format!("tar xvf paru-{PARU_VERSION}-{arch}.tar.zst && ./paru -Syu --noconfirm paru-bin").as_str(),
+        skip_if: || Ok(PathBuf::from("/usr/bin/paru").exists())
     }
         .install()?;
 
