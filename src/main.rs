@@ -1,4 +1,4 @@
-use std::{cell::LazyCell, collections::HashMap, fs::read_to_string, io::Write, path::PathBuf};
+use std::{cell::LazyCell, collections::HashMap, path::PathBuf};
 
 use clap::Parser;
 use cli::{ChrootInstallArgs, Cli, UserArgs};
@@ -253,20 +253,6 @@ fn sync_files(commit: bool, push: bool) -> anyhow::Result<()> {
     }
     std::fs::remove_file(dotfiles_folder.join("kitty/kitty.conf.bak")).ok();
     std::fs::remove_file(dotfiles_folder.join("nvim/lua/config/intree.lua")).ok();
-    // Remove intree from nvim init.
-    let init_contents = read_to_string(dotfiles_folder.join("nvim/init.lua"))?;
-    let mut nvim_init = std::fs::OpenOptions::new()
-        .write(true)
-        .truncate(true)
-        .open(dotfiles_folder.join("nvim/init.lua"))?;
-    for line in init_contents.lines() {
-        if line.contains("intree") {
-            println!("Removing intree from nvim init");
-            continue;
-        }
-        nvim_init.write(line.as_bytes())?;
-        nvim_init.write(b"\n")?;
-    }
 
     if commit {
         git_commit(main_folder, "Sync dotfiles")?;
