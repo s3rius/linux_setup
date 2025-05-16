@@ -108,6 +108,7 @@ const PACMAN_PACKAGES: &'static [&'static str] = &[
     "yaml-language-server",
     "texlab",
     "gopls",
+    "marksman",
 ];
 
 const CUSTOM_PACKAGES: &'static [CustomPackage] = &[
@@ -124,14 +125,6 @@ const CUSTOM_PACKAGES: &'static [CustomPackage] = &[
         build_command: "sh themes/install.sh --tweaks black --libadwaita && cp -r ./icons ~/.local/share",
         skip_if: || {
             let path = PathBuf::from(shellexpand::full("~/.themes/Gruvbox-Dark")?.to_string());
-            Ok(path.exists())
-        },
-    },
-    CustomPackage::GitPackage {
-        url: "https://github.com/vinceliuice/Colloid-kde.git",
-        build_command: "sh install.sh",
-        skip_if: || {
-            let path = PathBuf::from(shellexpand::full("~/.config/Kvantum/Colloid")?.to_string());
             Ok(path.exists())
         },
     },
