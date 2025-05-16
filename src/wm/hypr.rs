@@ -3,6 +3,7 @@ use crate::utils::{enable_services, install_pacman_packages};
 const HYPRLAND_PACKAGES: &'static [&'static str] = &[
     "hyprland",
     "hyprpaper",
+    "brightnessctl",
     "waybar",
     "swaync",
     "wofi",
