@@ -1,6 +1,10 @@
 require("config.lazy")
 require("config.lsp")
 
+-- Optional module, can be
+-- not available in your setup
+pcall(require, "config.intree")
+
 vim.o.tabstop = 2;
 vim.o.number = true
 vim.o.shiftwidth = 2
