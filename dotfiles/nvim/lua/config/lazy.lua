@@ -17,16 +17,25 @@ require("lazy").setup({
   spec = {
     -- import your plugins
     { import = "plugins" },
+    -- {
+    --   "Mofiqul/dracula.nvim",
+    --   lazy = false,
+    --   priority = 1000,
+    --   init = function()
+    --     require("dracula").setup {
+    --     }
+    --     vim.cmd [[colorscheme dracula]]
+    --   end
+    -- },
     {
-      "Mofiqul/dracula.nvim",
-      lazy = false,
+      "catppuccin/nvim",
+      name = "catppuccin",
       priority = 1000,
       init = function()
-        require("dracula").setup {
-        }
-        vim.cmd [[colorscheme dracula]]
+        vim.cmd [[colorscheme catppuccin]]
       end
-    },
+    }
+
   },
   -- Configure any other settings here. See the documentation for more details.
   -- colorscheme that will be used when installing plugins.
