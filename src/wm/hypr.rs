@@ -1,4 +1,4 @@
-use crate::utils::{enable_services, install_pacman_packages};
+use crate::utils::{enable_services, install_aur_packages, install_pacman_packages};
 
 const HYPRLAND_PACKAGES: &'static [&'static str] = &[
     "hyprland",
@@ -31,8 +31,11 @@ const HYPRLAND_PACKAGES: &'static [&'static str] = &[
     "uwsm",
 ];
 
+const PARU_PACKAGES: &'static [&'static str] = &["qt6gtk2"];
+
 pub fn install_hyprland() -> anyhow::Result<()> {
     install_pacman_packages(HYPRLAND_PACKAGES, true)?;
+    install_aur_packages(PARU_PACKAGES)?;
     enable_services(&["sddm.service"], true)?;
     Ok(())
 }
