@@ -27,6 +27,9 @@ pub const SERVICES_TO_ENABLE: &'static [&'static str] = &["docker.service"];
 
 /// Packages to install from AUR using AUR package manager like paru.
 pub const AUR_PACKAGES: &'static [&'static str] = &[
+    // Theming
+    "gruvbox-gtk-theme-git",
+    "gruvbox-plus-icon-theme-git",
     // Randoms
     "autojump-rs",
     "zen-browser-bin",
@@ -118,15 +121,6 @@ pub const CUSTOM_PACKAGES: &'static [CustomPackage] = &[
         build_command: "sh ./tools/install.sh --unattended",
         skip_if: || {
             let path = PathBuf::from(shellexpand::full("~/.oh-my-zsh")?.to_string());
-            Ok(path.exists())
-        },
-    },
-    CustomPackage::GitPackage {
-        repo: "https://github.com/Fausto-Korpsvart/Gruvbox-GTK-Theme.git",
-        git_ref: None,
-        build_command: "sh themes/install.sh --tweaks black --libadwaita && cp -r ./icons ~/.local/share",
-        skip_if: || {
-            let path = PathBuf::from(shellexpand::full("~/.themes/Gruvbox-Dark")?.to_string());
             Ok(path.exists())
         },
     },
