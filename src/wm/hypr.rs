@@ -10,6 +10,7 @@ const HYPRLAND_PACKAGES: &'static [&'static str] = &[
     "sddm",
     "otf-font-awesome",
     "qt6",
+    "qt6ct",
     "xdg-desktop-portal-hyprland",
     "pipewire",
     "pipewire-v4l2",
