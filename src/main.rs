@@ -1,4 +1,4 @@
-use std::{cell::LazyCell, collections::HashMap, path::PathBuf};
+use std::path::PathBuf;
 
 use clap::Parser;
 use cli::{ChrootInstallArgs, Cli, UserArgs};
@@ -12,129 +12,11 @@ use utils::{
 };
 
 mod cli;
+mod consts;
 mod custom_package;
 mod dotfiles;
 mod utils;
 mod wm;
-
-const PARU_VERSION: &str = "v2.0.4";
-const DOTFILES_MAPPING: LazyCell<HashMap<&'static str, &'static str>> = LazyCell::new(|| {
-    let mut mapping = HashMap::new();
-    mapping.insert(".zshrc", "~/.zshrc");
-    mapping.insert(".zshenv", "~/.zshenv");
-    mapping.insert("kitty", "~/.config/kitty");
-    mapping.insert(".zfunc", "~/.zfunc");
-    mapping.insert("hypr", "~/.config/hypr");
-    mapping.insert("nvim", "~/.config/nvim");
-    mapping.insert("wallpapers", "~/Pictures/wallpapers");
-    mapping.insert(".gitconfig", "~/.gitconfig");
-    mapping
-});
-
-const EXTRA_GROUPS: &'static [&'static str] = &["docker", "wheel"];
-
-const AUR_PACKAGES: &'static [&'static str] = &[
-    // Randoms
-    "autojump-rs",
-    "zen-browser-bin",
-    // Fonts
-    "ttf-symbola",
-    "ttf-ubraille",
-    "nerd-fonts",
-    // Lang servers.
-    "terraform-ls-bin",
-    "helm-ls-bin",
-];
-const PACMAN_PACKAGES: &'static [&'static str] = &[
-    // Top programs
-    "neovim",
-    "bat",
-    "kitty",
-    "starship",
-    "docker",
-    "lsd",
-    "mise",
-    "usage",
-    "kubectl",
-    "sd",
-    "fd",
-    "ripgrep",
-    "tig",
-    "thunderbird",
-    // Shell shit
-    "zsh",
-    "zsh-autosuggestions",
-    "zsh-syntax-highlighting",
-    // Fonts
-    "ttf-fira-code",
-    "ttf-font-awesome",
-    "ttf-iosevka-nerd",
-    "ttf-ubuntu-font-family",
-    "otf-font-awesome",
-    "opendesktop-fonts",
-    // Audio
-    "bluez",
-    "bluez-libs",
-    "bluez-utils",
-    "pavucontrol",
-    "playerctl",
-    "blueman",
-    // Random stuff
-    "acpi",
-    "base-devel",
-    "libldac",
-    "noto-fonts-emoji",
-    "gnome-keyring",
-    "linux-headers",
-    "tk",
-    "os-prober",
-    "wget",
-    "zip",
-    "unzip",
-    "feh",
-    "curl",
-    "mpv",
-    "java-runtime-common",
-    "man-db",
-    "kvantum",
-    // Lang servers
-    "rust-analyzer",
-    "lua-language-server",
-    "pyright",
-    "typescript-language-server",
-    "vue-language-server",
-    "vue-typescript-plugin",
-    "ruff",
-    "yaml-language-server",
-    "texlab",
-    "gopls",
-    "marksman",
-];
-
-const CUSTOM_PACKAGES: &'static [CustomPackage] = &[
-    CustomPackage::GitPackage {
-        url: "https://github.com/robbyrussell/oh-my-zsh.git",
-        build_command: "sh ./tools/install.sh --unattended",
-        skip_if: || {
-            let path = PathBuf::from(shellexpand::full("~/.oh-my-zsh")?.to_string());
-            Ok(path.exists())
-        },
-    },
-    CustomPackage::GitPackage {
-        url: "https://github.com/Fausto-Korpsvart/Gruvbox-GTK-Theme.git",
-        build_command: "sh themes/install.sh --tweaks black --libadwaita && cp -r ./icons ~/.local/share",
-        skip_if: || {
-            let path = PathBuf::from(shellexpand::full("~/.themes/Gruvbox-Dark")?.to_string());
-            Ok(path.exists())
-        },
-    },
-    CustomPackage::HttpFile {
-        url: "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip",
-        install_command: "unzip awscli-exe-linux-x86_64.zip && sudo ./aws/install",
-        skip_if: || Ok(PathBuf::from("/usr/local/bin/aws").exists()),
-    },
-];
-const SERVICES_TO_ENABLE: &'static [&'static str] = &["docker.service"];
 
 fn main() -> anyhow::Result<()> {
     let args = Cli::parse();
@@ -164,8 +46,16 @@ fn user_install(args: UserArgs) -> anyhow::Result<()> {
     };
     // Installing AUR helper.
     CustomPackage::HttpFile {
-        url: format!("https://github.com/Morganamilo/paru/releases/download/{PARU_VERSION}/paru-{PARU_VERSION}-{arch}.tar.zst").as_str(),
-        install_command: format!("tar xvf paru-{PARU_VERSION}-{arch}.tar.zst && ./paru -Syu --noconfirm paru-bin").as_str(),
+        url: format!(
+            "https://github.com/Morganamilo/paru/releases/download/{version}/paru-{version}-{arch}.tar.zst",
+            version=consts::PARU_VERSION,
+            arch=arch,
+        ).as_str(),
+        install_command: format!(
+            "tar xvf paru-{version}-{arch}.tar.zst && ./paru -Syu --noconfirm paru-bin",
+            version=consts::PARU_VERSION,
+            arch=arch,
+        ).as_str(),
         skip_if: || Ok(PathBuf::from("/usr/bin/paru").exists())
     }
         .install()?;
@@ -189,13 +79,13 @@ pub fn pull() -> anyhow::Result<()> {
 }
 
 pub fn apply() -> anyhow::Result<()> {
-    install_pacman_packages(PACMAN_PACKAGES, true)?;
-    install_aur_packages(AUR_PACKAGES)?;
-    for package in CUSTOM_PACKAGES {
+    install_pacman_packages(consts::PACMAN_PACKAGES, true)?;
+    install_aur_packages(consts::AUR_PACKAGES)?;
+    for package in consts::CUSTOM_PACKAGES {
         package.install()?;
     }
-    Dotfiles::copy(&DOTFILES_MAPPING)?;
-    enable_services(SERVICES_TO_ENABLE, true)?;
+    Dotfiles::copy(&consts::DOTFILES_MAPPING)?;
+    enable_services(consts::SERVICES_TO_ENABLE, true)?;
     Ok(())
 }
 
@@ -205,7 +95,7 @@ fn sync_files(commit: bool, push: bool) -> anyhow::Result<()> {
     std::fs::remove_dir_all(&dotfiles_folder).ok();
     std::fs::create_dir_all(&dotfiles_folder).ok();
     println!("Syncing dotfiles for {dotfiles_folder:?}");
-    for (local_path, sys_path) in DOTFILES_MAPPING.iter() {
+    for (local_path, sys_path) in consts::DOTFILES_MAPPING.iter() {
         let sys_path = PathBuf::from(shellexpand::full(sys_path)?.to_string());
         let mut target_path = dotfiles_folder.join(local_path);
         if target_path.exists() {
@@ -269,7 +159,7 @@ fn chroot_install(args: ChrootInstallArgs) -> anyhow::Result<()> {
     install_pacman_packages(["sudo", "rustup", "git-lfs"], false)?;
     run_command("git", ["lfs", "install"], false)?;
     run_command("git", ["lfs", "pull"], false)?;
-    install_pacman_packages(PACMAN_PACKAGES, false)?;
+    install_pacman_packages(consts::PACMAN_PACKAGES, false)?;
     // Setting currene timezone.
     println!("Setting timezone to {}", args.timezone);
     std::fs::remove_file("/etc/localtime").ok();
@@ -293,10 +183,10 @@ fn chroot_install(args: ChrootInstallArgs) -> anyhow::Result<()> {
     ch_passwd("root", &root_password)?;
 
     // Create groups.
-    mk_groups(EXTRA_GROUPS.iter())?;
+    mk_groups(consts::EXTRA_GROUPS.iter())?;
     // Create %wheel group.
     update_sudoers()?;
-    create_user(&args.username, EXTRA_GROUPS, "/bin/zsh")?;
+    create_user(&args.username, consts::EXTRA_GROUPS, "/bin/zsh")?;
     ch_passwd(&args.username, &user_password)?;
     install_grub(&args.efi_target, &args.efi_mountpoint, &args.bootloader_id)?;
     install_network_manager()?;

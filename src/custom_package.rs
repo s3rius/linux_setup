@@ -3,14 +3,25 @@ use rand::distr::{Alphanumeric, SampleString};
 use crate::utils::run_command;
 
 pub enum CustomPackage<'a> {
+    // This variant will clone the repo.
     GitPackage {
-        url: &'a str,
+        // Git URL.
+        repo: &'a str,
+        // Optional git ref (branch, tag, commit).
+        // If None, it will use the default branch.
+        git_ref: Option<&'a str>,
+        // Command to run after cloning the repo.
+        // This command should be run in the repo directory.
         build_command: &'a str,
+        // Function to check if we should skip the installation.
         skip_if: fn() -> anyhow::Result<bool>,
     },
     HttpFile {
+        // HTTP URL to download the file from.
         url: &'a str,
+        // Command to run after downloading the file.
         install_command: &'a str,
+        // Function to check if we should skip the installation.
         skip_if: fn() -> anyhow::Result<bool>,
     },
 }
@@ -23,7 +34,8 @@ impl<'a> CustomPackage<'a> {
 
         match self {
             CustomPackage::GitPackage {
-                url,
+                repo,
+                git_ref,
                 build_command,
                 skip_if,
             } => {
@@ -31,8 +43,11 @@ impl<'a> CustomPackage<'a> {
                     println!("Skipping custom package installation");
                     return Ok(());
                 }
-                println!("Installing custom package from git URL: {}", url);
-                run_command("git", ["clone", url, &build_dir], false)?;
+                println!("Installing custom package from git URL: {}", repo);
+                run_command("git", ["clone", repo, &build_dir], false)?;
+                if let Some(git_ref) = git_ref {
+                    run_command("git", ["checkout", git_ref], false)?;
+                }
                 let code = std::process::Command::new("bash")
                     .arg("-c")
                     .arg(build_command)
