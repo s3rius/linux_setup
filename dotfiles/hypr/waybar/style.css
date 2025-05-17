@@ -1,11 +1,11 @@
 * {
     font-family: Nerd Font Hack;
     font-size: 14px;
-    color: #FFFFFF;
+    color: #EBDBB2;
 }
 
 window#waybar {
-    background: rgba(135, 81, 159, 0.6);
+    background: #282828;
     border: none;
     border-radius: 20px;
 }
@@ -20,6 +20,10 @@ box .modules-left> :last-child>label {
     padding-left: 10px;
 }
 
+box .modules-right {
+  padding-right: 10px;
+}
+
 #workspaces button {
     border-radius: 0;
     border-bottom: solid 2px transparent;
@@ -28,10 +32,3 @@ box .modules-left> :last-child>label {
 #workspaces button.active {
     border-bottom: solid 2px #FFFFFF;
 }
-
-/* #workspaces button:hover {
-    transition: none;
-    box-shadow: inherit;
-    text-shadow: inherit;
-    color: #ff79c6;
-} */
