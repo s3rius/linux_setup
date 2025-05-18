@@ -62,6 +62,11 @@ pub const PACMAN_PACKAGES: &'static [&'static str] = &[
     "thunderbird",
     "virt-manager",
     "transmission-gtk",
+    // Document viewers
+    "zathura",
+    "zathura-pdf-mupdf",
+    "zathura-cb",
+    "zathura-djvu",
     // Shell shit
     "zsh",
     "zsh-autosuggestions",
