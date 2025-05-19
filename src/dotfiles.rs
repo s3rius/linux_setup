@@ -11,7 +11,7 @@ use rust_embed::Embed;
 pub struct Dotfiles;
 
 impl Dotfiles {
-    pub fn copy(file_mapping: &HashMap<&str, &str>) -> anyhow::Result<()> {
+    pub fn copy(file_mapping: &HashMap<String, String>) -> anyhow::Result<()> {
         for (file, target_path) in file_mapping {
             for embeded_file in Self::iter() {
                 if embeded_file.starts_with(file) {

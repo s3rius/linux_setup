@@ -5,6 +5,8 @@ use std::{
     process::{Command, ExitStatus, Stdio},
 };
 
+use crate::config::Config;
+
 /// Get password from user.
 ///
 /// Pass type is only used in the prompt.
@@ -135,13 +137,21 @@ pub fn update_sudoers() -> anyhow::Result<()> {
     Ok(())
 }
 
-pub fn create_user(username: &str, groups: &[&str], shell: &str) -> anyhow::Result<()> {
+pub fn create_user(
+    username: &str,
+    groups: impl Iterator<Item = impl ToString>,
+    shell: &str,
+) -> anyhow::Result<()> {
     println!("Creating user {username}");
     let code = run_command(
         "useradd",
         [
             "--groups",
-            groups.join(",").as_str(),
+            groups
+                .map(|f| f.to_string())
+                .collect::<Vec<_>>()
+                .join(",")
+                .as_str(),
             "--create-home",
             "--shell",
             shell,
@@ -156,17 +166,23 @@ pub fn create_user(username: &str, groups: &[&str], shell: &str) -> anyhow::Resu
     Ok(())
 }
 
-pub fn install_grub(
-    efi_target: &str,
-    efi_mountpoint: &str,
-    bootloader_id: &str,
-) -> anyhow::Result<()> {
+pub fn install_grub(efi_mountpoint: &str, bootloader_id: &str) -> anyhow::Result<()> {
     install_pacman_packages(["grub", "efibootmgr", "os-prober"], false)?;
+    let target = match std::env::consts::ARCH {
+        "x86" => "i386-efi",
+        "x86_64" => "x86_64-efi",
+        "arm" => "arm-efi",
+        "aarch64" => "arm64-efi",
+        "riscv32" => "riscv32-efi",
+        "riscv64" => "riscv64-efi",
+        "loongarch64" => "loongarch64-efi",
+        _ => anyhow::bail!("Unsupported CPU architecture for GRUB."),
+    };
     let code = run_command(
         "grub-install",
         [
             "--target",
-            efi_target,
+            target,
             "--efi-directory",
             efi_mountpoint,
             "--bootloader-id",
@@ -184,14 +200,18 @@ pub fn install_grub(
     Ok(())
 }
 
-pub fn enable_services(services: &[&str], sudo: bool) -> anyhow::Result<()> {
+pub fn enable_services(
+    services: impl Iterator<Item = impl ToString>,
+    sudo: bool,
+) -> anyhow::Result<()> {
     println!("Enabling services:");
     for service in services {
-        let code = run_command("systemctl", ["enable", service], sudo)?;
+        let service_name = service.to_string();
+        let code = run_command("systemctl", ["enable", &service_name], sudo)?;
         if !code.success() {
-            anyhow::bail!("Failed to enable {service}");
+            anyhow::bail!("Failed to enable {service_name}");
         }
-        println!(" * Enabled {service}");
+        println!(" * Enabled {service_name}");
     }
     Ok(())
 }
@@ -199,7 +219,7 @@ pub fn enable_services(services: &[&str], sudo: bool) -> anyhow::Result<()> {
 pub fn install_network_manager() -> anyhow::Result<()> {
     println!("Installing network manager");
     install_pacman_packages(["networkmanager"], false)?;
-    enable_services(&["NetworkManager.service"], false)?;
+    enable_services(["NetworkManager.service"].iter(), false)?;
     Ok(())
 }
 
@@ -224,10 +244,13 @@ pub fn install_self_bin(project: &str) -> anyhow::Result<()> {
     Ok(())
 }
 
-pub fn self_install_user(repo_url: &str, config_path: &str) -> anyhow::Result<()> {
-    let target_dir = shellexpand::full(config_path)?.to_string();
+pub fn self_install_user(config: &Config) -> anyhow::Result<()> {
+    let target_dir = shellexpand::full(&config.linux.configs_path)?.to_string();
     // Clone the repo to the target directory
-    run_command("git", ["clone", repo_url, &target_dir], false)?;
+    run_command("git", ["clone", &config.linux.repo_url, &target_dir], false)?;
+    // Update config with values from
+    // when the user was created.
+    config.dump(PathBuf::from(&target_dir).join("Config.toml"))?;
 
     // Install the binary from there.
     install_self_bin(&target_dir)?;
@@ -260,4 +283,27 @@ pub fn git_push(repo: &str) -> anyhow::Result<ExitStatus> {
 pub fn git_commit(repo: &str, message: &str) -> anyhow::Result<ExitStatus> {
     run_command("git", ["-C", repo, "add", "."], false)?;
     run_command("git", ["-C", repo, "commit", "-m", message], false).into()
+}
+
+pub fn expand_path(path: &str) -> anyhow::Result<String> {
+    let expanded = shellexpand::full(path)?;
+    Ok(expanded.to_string())
+}
+
+pub fn path_shrink(path: &PathBuf) -> anyhow::Result<PathBuf> {
+    let home_path = shellexpand::tilde("~");
+    let path = PathBuf::from(shellexpand::full(&path.display().to_string())?.to_string());
+    let mut target_path = path.clone();
+    if path.is_relative() {
+        let dir = std::env::current_dir()?;
+        target_path = dir.join(path);
+    }
+    target_path = target_path.canonicalize()?;
+    if target_path.starts_with(home_path.to_string()) {
+        let relative = target_path
+            .strip_prefix(home_path.to_string())?
+            .to_path_buf();
+        target_path = PathBuf::from("~").join(relative);
+    }
+    Ok(target_path)
 }

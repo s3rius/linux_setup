@@ -31,9 +31,8 @@ const HYPRLAND_PACKAGES: &'static [&'static str] = &[
     "uwsm",
 ];
 
-
 pub fn install_hyprland() -> anyhow::Result<()> {
     install_pacman_packages(HYPRLAND_PACKAGES, true)?;
-    enable_services(&["sddm.service"], true)?;
+    enable_services(["sddm.service"].iter(), true)?;
     Ok(())
 }
