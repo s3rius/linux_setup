@@ -1,7 +1,7 @@
 [linux]
 bootloader_id = "I use arch BTW"
 configs_path = "~/.config/linux_setup"
-efi_mountpoint = "/boot/efi"
+efi_mountpoint = "/boot/EFI"
 groups = [
 "docker",
 "libvirt",
