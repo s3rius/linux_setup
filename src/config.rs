@@ -125,10 +125,14 @@ impl Config {
                 for (_, table_val) in table.iter_mut() {
                     if let Some(arr) = table_val.as_array_mut() {
                         // Also, apply some formatting to it.
-                        arr.set_trailing_comma(true);
                         arr.sort_by(|a, b| a.to_string().cmp(&b.to_string()));
+                        arr.set_trailing_comma(false);
+                        if arr.len() < 5 {
+                            continue;
+                        }
+                        arr.set_trailing_comma(true);
                         for item in arr.iter_mut() {
-                            item.decor_mut().set_prefix("\n");
+                            item.decor_mut().set_prefix("\n\t");
                         }
                         arr.set_trailing("\n");
                     };
