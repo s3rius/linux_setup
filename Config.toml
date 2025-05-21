@@ -32,6 +32,11 @@ aur = [
 	"zen-browser-bin",
 ]
 pacman = [
+  "pipewire-alsa",
+  "pipewire-jack",
+  "sof-firmware",
+  "ueberzugpp",
+  "imagemagick",
 	"acpi",
 	"base-devel",
 	"bat",
