@@ -16,6 +16,7 @@ username = "s3rius"
 ".zshrc" = "~/.zshrc"
 hypr = "~/.config/hypr"
 kitty = "~/.config/kitty"
+"mimeapps.list" = "~/.config/mimeapps.list"
 nvim = "~/.config/nvim"
 wallpapers = "~/Pictures/wallpapers"
 
@@ -32,12 +33,6 @@ aur = [
 	"zen-browser-bin",
 ]
 pacman = [
-  "xournalpp",
-  "pipewire-alsa",
-  "pipewire-jack",
-  "sof-firmware",
-  "ueberzugpp",
-  "imagemagick",
 	"acpi",
 	"base-devel",
 	"bat",
@@ -51,6 +46,7 @@ pacman = [
 	"feh",
 	"gnome-keyring",
 	"gopls",
+	"imagemagick",
 	"java-runtime-common",
 	"kitty",
 	"kubectl",
@@ -69,12 +65,15 @@ pacman = [
 	"os-prober",
 	"otf-font-awesome",
 	"pavucontrol",
+	"pipewire-alsa",
+	"pipewire-jack",
 	"playerctl",
 	"pyright",
 	"ripgrep",
 	"ruff",
 	"rust-analyzer",
 	"sd",
+	"sof-firmware",
 	"starship",
 	"texlab",
 	"thunderbird",
@@ -86,12 +85,14 @@ pacman = [
 	"ttf-iosevka-nerd",
 	"ttf-ubuntu-font-family",
 	"typescript-language-server",
+	"ueberzugpp",
 	"unzip",
 	"usage",
 	"virt-manager",
 	"vue-language-server",
 	"vue-typescript-plugin",
 	"wget",
+	"xournalpp",
 	"yaml-language-server",
 	"zathura",
 	"zathura-cb",
