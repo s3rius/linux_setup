@@ -41,6 +41,7 @@ pacman = [
 	"bluez-libs",
 	"bluez-utils",
 	"curl",
+  "clang",
 	"docker",
 	"fd",
 	"feh",
