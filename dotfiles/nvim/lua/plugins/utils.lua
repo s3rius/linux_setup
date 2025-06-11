@@ -98,7 +98,7 @@ return {
     'akinsho/toggleterm.nvim',
     config = true,
     opts = {
-      open_mapping = [[<C-`>]],
+      open_mapping = [[~]],
       shell = vim.o.shell,
       title_pos = 'left',
     }
