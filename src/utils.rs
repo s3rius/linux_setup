@@ -216,6 +216,19 @@ pub fn enable_services(
     Ok(())
 }
 
+pub fn enable_user_services(services: impl Iterator<Item = impl ToString>) -> anyhow::Result<()> {
+    println!("Enabling user services:");
+    for service in services {
+        let service_name = service.to_string();
+        let code = run_command("systemctl", ["--user", "enable", &service_name], false)?;
+        if !code.success() {
+            anyhow::bail!("Failed to enable user service {service_name}");
+        }
+        println!(" * Enabled user service {service_name}");
+    }
+    Ok(())
+}
+
 pub fn install_network_manager() -> anyhow::Result<()> {
     println!("Installing network manager");
     install_pacman_packages(["networkmanager"], false)?;
