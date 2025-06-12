@@ -4,6 +4,7 @@ EDITOR=/bin/vim
 LC_ALL="$LANG"
 TERM=xterm-256color
 K3D_FIX_MOUNTS=1
+QML_IMPORT_PATH=/usr/lib/qt6/qml
 # Gcloud
 # CLOUDSDK_ROOT_DIR=/opt/google-cloud-cli
 # CLOUDSDK_PYTHON=/usr/bin/python

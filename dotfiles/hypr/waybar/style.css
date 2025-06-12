@@ -1,13 +1,40 @@
+@import url("../colors.css");
+
 * {
     font-family: Nerd Font Hack;
     font-size: 14px;
-    color: #EBDBB2;
+    color: @--color-fg;
+}
+
+#workspaces button.active {
+    border-bottom: solid 2px @--color-fg;
 }
 
 window#waybar {
-    background: #282828;
+    background: transparent;
     border: none;
     border-radius: 20px;
+}
+
+.horizontal .modules-left {
+  background: @--color-bg;
+  border-radius: 20px;
+  padding-right: 10px;
+  padding-left: 10px;
+}
+
+.horizontal .modules-center {
+  background: @--color-bg;
+  border-radius: 20px;
+  padding-right: 10px;
+  padding-left: 10px;
+}
+
+.horizontal .modules-right {
+  background: @--color-bg;
+  border-radius: 20px;
+  padding-right: 10px;
+  padding-left: 12px;
 }
 
 box .modules-left> :not(:last-child)>label {
@@ -29,6 +56,6 @@ box .modules-right {
     border-bottom: solid 2px transparent;
 }
 
-#workspaces button.active {
-    border-bottom: solid 2px #FFFFFF;
+#battery.critical {
+    color: @--color-accent;
 }

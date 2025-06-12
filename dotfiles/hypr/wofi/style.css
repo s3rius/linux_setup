@@ -1,35 +1,35 @@
+@import ".config/hypr/colors.css";
+
 window {
-    margin: 5px;
-    background-color: #1D2021;
-    border-radius: 10;
+    background-color: transparent;
 }
 
 #outer-box {
-    margin: 5px;
-    background-color: #1D2021;
-    border-radius: 10;
+    background-color: transparent;
 }
 
 #input {
     margin: 5px;
-    border: 2px #D65D0E !important;
-    background-color: #3C3836;
+    border: 2px @--color-accent !important;
+    background-color: @--color-bg;
     color: white;
     font-size: 18px;
     font-weight: bold;
 }
 
-
 #inner-box {
-    margin: 5px;
-    background-color: #3C3836;
+    background-color: @--color-bg;
+    border-radius: 10px;
 }
 
 #scroll {
     margin: 5px;
     font-size: 16px;
-    color: #D79921;
-    border-radius: 10;
+    color: @--color-fg;
+    background-color: transparent;
+    border-radius: 10px;
+    padding: 5px;
+
 }
 
 #scroll label {
@@ -38,10 +38,12 @@ window {
 
 #entry {
     background-color: transparent;
+    margin: 5px;
+    border-radius: 10px;
 }
 
 #entry:selected {
-    border: 2px solid #D65D0E;
+    border: 2px solid @--color-accent;
 }
 
 #img {

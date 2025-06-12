@@ -136,6 +136,10 @@ lspconfig.helm_ls.setup {
   }
 }
 lspconfig.yamlls.setup {}
+lspconfig.qmlls.setup {
+  cmd = { "qmlls6", "-E" },
+  root_markers = { "shell.qml" }
+}
 
 
 require('lsp_signature').setup {

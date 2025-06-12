@@ -12,7 +12,6 @@
     "modules-left": [
         "pulseaudio",
         "battery",
-        "cpu",
         "hyprland/language",
         "clock"
     ],
@@ -20,36 +19,58 @@
         "hyprland/workspaces"
     ],
     "modules-right": [
-	"hyprland/submap",
-        "tray"
+   	  "hyprland/submap",
+      "tray"
     ],
     "pulseaudio": {
-        "format": "vol {volume}%",
+        "format": "{icon}   {volume}%",
+        "format-icons": ["", "", "", "",  "",  "", "", ""],
+        "format-muted": " ✘",
         "on-click": "pavucontrol"
     },
     "battery": {
-        "format": "bat {capacity}%"
+        "states": {
+            "critical": 15,
+        },
+        "format": "{icon}   {capacity}",
+        "format-icons": ["", "", "", "", ""],
+        "format-charging": "󱐋 {capacity}",
+        "max-length": 25
     },
-    "cpu": {
-        "format": "cpu {usage}%",
-        "tooltip": true
-    },
-    "tray": {
-        // "icon-size": 21,
+  "tray": {
+    // "icon-size": 21,
         "spacing": 10
     },
     "clock": {
-        // "timezone": "America/New_York",
+        "format": "   {:%H:%M}",
         "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
-        "format-alt": "{:%Y-%m-%d %H:%M}"
+        "format-alt": "   {:%d-%m-%Y %H:%M}"
     },
     "hyprland/language": {
-        "format": "{}",
+        "format": "   {}",
         "format-en": "en",
         "format-ru": "ru",
         "format-dk": "dk"
     },
     "hyprland/submap": {
         "format": " {} "
+    },
+    "hyprland/workspaces": {
+      "all-outputs": false,
+      "format": "{icon}",
+      "default-icon": " ",
+      "format-icons": {
+        "1": "",
+        "2": "",
+        "3": "",
+        "9": "",
+      },
+      "max-length": 25,
+      // The maximum number of workspaces to display
+      // If there are more, they will be hidden
+      // Set to 0 to display all workspaces
+      // If you want to display all workspaces, set this to 0
+      // and remove the max-length option
+      "max-workspaces": 0
     }
 }
