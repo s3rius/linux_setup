@@ -29,6 +29,7 @@
         "on-click": "pavucontrol"
     },
     "battery": {
+        "interval": 3,
         "states": {
             "critical": 15,
         },

@@ -56,6 +56,6 @@ box .modules-right {
     border-bottom: solid 2px transparent;
 }
 
-#battery.critical {
+#battery.critical:not(.charging) {
     color: @--color-accent;
 }
