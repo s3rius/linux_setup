@@ -1,5 +1,4 @@
 local lsp_zero = require('lsp-zero')
-local lspconfig = require('lspconfig')
 local cmp = require("cmp")
 local telescope = require('telescope.builtin')
 local trouble = require('trouble.api')
@@ -49,12 +48,6 @@ lsp_zero.on_attach(function(_, bufnr)
   end, { desc = "Find all references" })
 end)
 
--- capabilities.workspace = {
---   didChangeWatchedFiles = {
---     dynamicRegistration = true,
---   },
--- }
-
 cmp.setup {
   mapping = cmp.mapping.preset.insert({
     ["<CR>"] = cmp.mapping.confirm({
@@ -76,7 +69,7 @@ cmp.setup {
 require('copilot_cmp').setup {}
 
 
-lspconfig.rust_analyzer.setup {
+vim.lsp.config('rust_analyzer', {
   settings = {
     ["rust-analyzer"] = {
       -- Other Settings ...
@@ -95,22 +88,11 @@ lspconfig.rust_analyzer.setup {
       },
     },
   }
-}
-lspconfig.clangd.setup {}
-lspconfig.lua_ls.setup {}
-lspconfig.pyright.setup {}
-lspconfig.ruff.setup {}
-lspconfig.volar.setup {}
-lspconfig.kotlin_language_server.setup {}
-lspconfig.texlab.setup {}
-lspconfig.marksman.setup {}
-lspconfig.terraformls.setup {}
-lspconfig.gopls.setup {}
--- lspconfig.elixirls.setup {}
-lspconfig.lexical.setup {
+})
+vim.lsp.config('lexical', {
   cmd = { "lexical" }
-}
-lspconfig.ts_ls.setup {
+})
+vim.lsp.config("ts_ls", {
   init_options = {
     plugins = {
       {
@@ -125,8 +107,8 @@ lspconfig.ts_ls.setup {
     "typescript",
     "vue",
   },
-}
-lspconfig.helm_ls.setup {
+})
+vim.lsp.config("helm_ls", {
   settings = {
     ['helm-ls'] = {
       yamlls = {
@@ -134,13 +116,33 @@ lspconfig.helm_ls.setup {
       }
     }
   }
-}
-lspconfig.yamlls.setup {}
-lspconfig.qmlls.setup {
-  cmd = { "qmlls6", "-E" },
-  root_markers = { "shell.qml" }
-}
+})
+vim.lsp.config("taplo", {
+  settings = {
+    ['taplo'] = {
+      root_markers = { "." }
+    }
+  }
+})
 
+vim.lsp.enable({
+  "clangd",
+  "lua_ls",
+  "pyright",
+  "ruff",
+  "volar",
+  "kotlin_language_server",
+  "texlab",
+  "marksman",
+  "terraformls",
+  "gopls",
+  "taplo",
+  "lexical",
+  "ts_ls",
+  "helm_ls",
+  "yamlls",
+  -- "elixirls",
+})
 
 require('lsp_signature').setup {
   bind = true,

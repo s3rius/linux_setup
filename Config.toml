@@ -76,6 +76,7 @@ pacman = [
 	"sd",
 	"sof-firmware",
 	"starship",
+  "taplo-cli",
 	"texlab",
 	"thunderbird",
 	"tig",
