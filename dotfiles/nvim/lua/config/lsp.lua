@@ -130,7 +130,7 @@ vim.lsp.enable({
   "lua_ls",
   "pyright",
   "ruff",
-  "volar",
+  "vue_ls",
   "kotlin_language_server",
   "texlab",
   "marksman",
