@@ -141,6 +141,7 @@ vim.lsp.enable({
   "ts_ls",
   "helm_ls",
   "yamlls",
+  "rust_analyzer",
   -- "elixirls",
 })
 
