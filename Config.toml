@@ -4,21 +4,12 @@ configs_path = "~/.config/linux_setup"
 efi_mountpoint = "/boot/EFI"
 groups = ["docker", "libvirt", "wheel"]
 locales = ["en_US.UTF-8", "ru_RU.UTF-8"]
+# Ldfm compatible repository URL
 repo_url = "https://github.com/s3rius/linux_setup.git"
 services = ["docker"]
 timezone = "Europe/Belgrade"
 username = "s3rius"
-
-[dotfiles]
-".gitconfig" = "~/.gitconfig"
-".zfunc" = "~/.zfunc"
-".zshenv" = "~/.zshenv"
-".zshrc" = "~/.zshrc"
-hypr = "~/.config/hypr"
-kitty = "~/.config/kitty"
-"mimeapps.list" = "~/.config/mimeapps.list"
-nvim = "~/.config/nvim"
-wallpapers = "~/Pictures/wallpapers"
+dotfiles_repo = "https://github.com/s3rius/dotfiles.git"
 
 [packages]
 aur = [

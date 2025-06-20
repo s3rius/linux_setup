@@ -5,8 +5,6 @@ use std::{
     process::{Command, ExitStatus, Stdio},
 };
 
-use crate::config::Config;
-
 /// Get password from user.
 ///
 /// Pass type is only used in the prompt.
@@ -245,78 +243,10 @@ pub fn self_install_chroot() -> anyhow::Result<()> {
     Ok(())
 }
 
-pub fn install_self_bin(project: &str) -> anyhow::Result<()> {
-    let code = Command::new("cargo")
-        .args(["install", "--path", "."])
-        .current_dir(&project)
-        .spawn()?
-        .wait()?;
-    if !code.success() {
-        anyhow::bail!("Failed to install self bin");
-    }
+pub fn instll_ldfm(dotfiles_repo: &str) -> anyhow::Result<()> {
+    println!("Installing ldfm");
+    run_command("cargo", ["install", "ldfm", "--locked"], false)?;
+    run_command("ldfm", ["init", dotfiles_repo], false)?;
+    run_command("ldfm", ["apply"], false)?;
     Ok(())
-}
-
-pub fn self_install_user(config: &Config) -> anyhow::Result<()> {
-    let target_dir = shellexpand::full(&config.linux.configs_path)?.to_string();
-    // Clone the repo to the target directory
-    run_command("git", ["clone", &config.linux.repo_url, &target_dir], false)?;
-    // Update config with values from
-    // when the user was created.
-    config.dump(PathBuf::from(&target_dir).join("Config.toml"))?;
-
-    // Install the binary from there.
-    install_self_bin(&target_dir)?;
-
-    // Remove previous chroot binary from the system.
-    run_command(
-        "rm",
-        [
-            "-f",
-            PathBuf::from("/usr/local/sbin")
-                .join(std::env!("CARGO_BIN_NAME"))
-                .display()
-                .to_string()
-                .as_str(),
-        ],
-        true,
-    )?;
-
-    Ok(())
-}
-
-pub fn git_pull(repo: &str) -> anyhow::Result<ExitStatus> {
-    run_command("git", ["-C", repo, "pull"], false).into()
-}
-
-pub fn git_push(repo: &str) -> anyhow::Result<ExitStatus> {
-    run_command("git", ["-C", repo, "push"], false).into()
-}
-
-pub fn git_commit(repo: &str, message: &str) -> anyhow::Result<ExitStatus> {
-    run_command("git", ["-C", repo, "add", "."], false)?;
-    run_command("git", ["-C", repo, "commit", "-m", message], false).into()
-}
-
-pub fn expand_path(path: &str) -> anyhow::Result<String> {
-    let expanded = shellexpand::full(path)?;
-    Ok(expanded.to_string())
-}
-
-pub fn path_shrink(path: &PathBuf) -> anyhow::Result<PathBuf> {
-    let home_path = shellexpand::tilde("~");
-    let path = PathBuf::from(shellexpand::full(&path.display().to_string())?.to_string());
-    let mut target_path = path.clone();
-    if path.is_relative() {
-        let dir = std::env::current_dir()?;
-        target_path = dir.join(path);
-    }
-    target_path = target_path.canonicalize()?;
-    if target_path.starts_with(home_path.to_string()) {
-        let relative = target_path
-            .strip_prefix(home_path.to_string())?
-            .to_path_buf();
-        target_path = PathBuf::from("~").join(relative);
-    }
-    Ok(target_path)
 }
