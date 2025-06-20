@@ -1,4 +1,5 @@
 use std::{
+    env,
     ffi::OsStr,
     io::Write,
     path::PathBuf,
@@ -245,8 +246,13 @@ pub fn self_install_chroot() -> anyhow::Result<()> {
 
 pub fn instll_ldfm(dotfiles_repo: &str) -> anyhow::Result<()> {
     println!("Installing ldfm");
+    let home_dir = std::env::home_dir().ok_or(anyhow::anyhow!("Cannot get home directory"))?;
+    let ldfm_path = home_dir.join(".cargo/bin/ldfm");
     run_command("cargo", ["install", "ldfm", "--locked"], false)?;
-    run_command("ldfm", ["init", dotfiles_repo], false)?;
-    run_command("ldfm", ["apply"], false)?;
+    if ldfm_path.exists() {
+        println!("ldfm is found at {}", ldfm_path.display());
+        run_command(&ldfm_path, ["init", dotfiles_repo], false)?;
+        run_command(&ldfm_path, ["apply"], false)?;
+    }
     Ok(())
 }
