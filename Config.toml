@@ -25,6 +25,9 @@ aur = [
 ]
 pacman = [
 	"acpi",
+  "zsh-completions",
+  "zls",
+  "helm",
 	"base-devel",
 	"bat",
 	"blueman",
