@@ -49,6 +49,8 @@ pacman = [
 	"libldac",
 	"linux-headers",
 	"lsd",
+  "lua51",
+  "luarocks",
 	"lua-language-server",
 	"man-db",
 	"marksman",
