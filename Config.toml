@@ -22,6 +22,7 @@ aur = [
 	"ttf-symbola",
 	"ttf-ubraille",
 	"zen-browser-bin",
+  "bibata-cursor-theme-bin",
 ]
 pacman = [
 	"acpi",
