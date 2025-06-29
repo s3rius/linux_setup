@@ -1,6 +1,7 @@
 use crate::utils::{enable_services, enable_user_services, install_pacman_packages};
 
 const HYPRLAND_PACKAGES: &'static [&'static str] = &[
+    "gammastep",
     "hyprland",
     "hyprpaper",
     "hyprpolkitagent",
