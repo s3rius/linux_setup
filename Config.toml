@@ -49,7 +49,7 @@ pacman = [
 	"kvantum",
 	"libldac",
 	"linux-headers",
-	"lsd",
+  "eza",
   "lua51",
   "luarocks",
 	"lua-language-server",
