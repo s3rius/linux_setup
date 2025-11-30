@@ -76,6 +76,7 @@ pacman = [
 	"starship",
   "tombi",
 	"texlab",
+	"tinymist",
 	"thunderbird",
 	"tig",
 	"tk",
