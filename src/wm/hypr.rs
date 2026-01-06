@@ -21,7 +21,6 @@ const HYPRLAND_PACKAGES: &'static [&'static str] = &[
     "grim",
     "slurp",
     "wl-clipboard",
-    "gtk-engine-murrine",
     "network-manager-applet",
     "noto-fonts",
     "noto-fonts-cjk",

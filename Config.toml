@@ -58,7 +58,6 @@ pacman = [
 	"mise",
 	"mpv",
 	"neovim",
-	"neocmakelsp-bin",
 	"noto-fonts-emoji",
 	"opendesktop-fonts",
 	"os-prober",
