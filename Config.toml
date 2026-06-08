@@ -38,6 +38,8 @@ pacman = [
   "curl",
   "clang",
   "docker",
+  "docker-compose",
+  "docker-buildx",
   "fd",
   "feh",
   "gnome-keyring",
