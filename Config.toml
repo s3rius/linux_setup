@@ -12,7 +12,6 @@ locales = ["en_US.UTF-8", "ru_RU.UTF-8"]
 vconsole_keymap = "us"
 # Current timezone.
 timezone = "Europe/Belgrade"
-xkbmodel = ""
 # Chezmoi compatible dotfiles repo.
 # Will be passed to init.
 # If you don't have such repositroy, just remove this line.
