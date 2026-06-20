@@ -1,120 +1,19 @@
 [linux]
+# Name of the bootloader in BIOS
 bootloader_id = "I use arch BTW"
-configs_path = "~/.config/linux_setup"
+# Where EFI partition is mounted inside chroot.
 efi_mountpoint = "/boot/EFI"
-groups = ["docker", "libvirt", "wheel"]
-locales = ["en_US.UTF-8", "ru_RU.UTF-8"]
-# Ldfm compatible repository URL
-repo_url = "https://github.com/s3rius/linux_setup.git"
-services = ["docker"]
-timezone = "Europe/Belgrade"
+# Username for your user.
 username = "s3rius"
-dotfiles_repo = "https://github.com/s3rius/dotfiles.git"
-
-[packages]
-aur = [
-  "autojump-rs",
-  "gruvbox-gtk-theme-git",
-  "gruvbox-plus-icon-theme-git",
-  "helm-ls-bin",
-  "nerd-fonts",
-  "terraform-ls-bin",
-  "ttf-symbola",
-  "ttf-ubraille",
-  "zen-browser-bin",
-  "bibata-cursor-theme-bin",
-]
-pacman = [
-  "acpi",
-  "zsh-completions",
-  "zls",
-  "helm",
-  "base-devel",
-  "bat",
-  "blueman",
-  "bluez",
-  "bluez-libs",
-  "bluez-utils",
-  "curl",
-  "clang",
-  "docker",
-  "docker-compose",
-  "docker-buildx",
-  "fd",
-  "feh",
-  "gnome-keyring",
-  "gopls",
-  "imagemagick",
-  "java-runtime-common",
-  "kitty",
-  "kubectl",
-  "kvantum",
-  "libldac",
-  "linux-headers",
-  "eza",
-  "lua51",
-  "luarocks",
-  "lua-language-server",
-  "man-db",
-  "marksman",
-  "mise",
-  "mpv",
-  "neovim",
-  "noto-fonts-emoji",
-  "opendesktop-fonts",
-  "os-prober",
-  "otf-font-awesome",
-  "pavucontrol",
-  "pipewire-alsa",
-  "pipewire-jack",
-  "playerctl",
-  "pyright",
-  "ripgrep",
-  "ruff",
-  "rust-analyzer",
-  "sd",
-  "sof-firmware",
-  "starship",
-  "tombi",
-  "texlab",
-  "tinymist",
-  "thunderbird",
-  "tig",
-  "tk",
-  "transmission-gtk",
-  "ttf-fira-code",
-  "ttf-font-awesome",
-  "ttf-iosevka-nerd",
-  "ttf-ubuntu-font-family",
-  "typescript-language-server",
-  "ueberzugpp",
-  "unzip",
-  "usage",
-  "virt-manager",
-  "vue-language-server",
-  "vue-typescript-plugin",
-  "wget",
-  "xournalpp",
-  "yaml-language-server",
-  "zathura",
-  "zathura-cb",
-  "zathura-djvu",
-  "zathura-pdf-mupdf",
-  "zip",
-  "zsh",
-  "zsh-autosuggestions",
-  "zsh-syntax-highlighting",
-]
-paru_version = "v2.0.4"
-
-[[custom_packages]]
-type = "git"
-repo = "https://github.com/robbyrussell/oh-my-zsh.git"
-build_command = "sh ./tools/install.sh --unattended"
-skip_if_exists = "~/.oh-my-zsh"
-
-[[custom_packages]]
-type = "httpfile"
-url = "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip"
-install_command = "unzip awscli-exe-linux-x86_64.zip && sudo ./aws/install"
-skip_if_exists = "/usr/local/bin/aws"
+# Groups to assign to this user.
+groups = ["docker", "libvirt"]
+# Locales to generate.
+locales = ["en_US.UTF-8", "ru_RU.UTF-8"]
+vconsole_keymap = "us"
+# Current timezone.
+timezone = "Europe/Belgrade"
+xkbmodel = ""
+# Chezmoi compatible dotfiles repo.
+# Will be passed to init.
+# If you don't have such repositroy, just remove this line.
+dotfiles_repo = "s3rius/dotfiles"
