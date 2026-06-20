@@ -1,9 +1,10 @@
 use std::{
     ffi::OsStr,
     io::Write,
-    path::PathBuf,
     process::{Command, ExitStatus, Stdio},
 };
+
+use rand::distr::{Alphanumeric, SampleString};
 
 /// Get password from user.
 ///
@@ -42,6 +43,30 @@ pub fn run_command<T: AsRef<OsStr>>(
     Ok(status)
 }
 
+pub fn run_as_user<T: AsRef<OsStr>>(
+    user: &str,
+    command: impl AsRef<OsStr>,
+    args: impl IntoIterator<Item = T>,
+) -> anyhow::Result<ExitStatus> {
+    let home_dir = format!("/home/{user}");
+    let status = Command::new("runuser")
+        .env_clear()
+        .envs([
+            ("PATH", "/usr/local/bin:/usr/bin:/bin"),
+            ("HOME", &home_dir),
+            ("USER", &user),
+        ])
+        .current_dir(format!("/home/{}", user))
+        .args(["-u", user])
+        .arg("--")
+        .arg(command)
+        .args(args)
+        .spawn()?
+        .wait()?;
+
+    Ok(status)
+}
+
 pub fn install_pacman_packages<T: IntoIterator<Item = impl ToString>>(
     packages: T,
     sudo: bool,
@@ -56,20 +81,6 @@ pub fn install_pacman_packages<T: IntoIterator<Item = impl ToString>>(
         anyhow::bail!("Failed to install pacman packages");
     }
 
-    Ok(())
-}
-
-pub fn install_aur_packages<T: IntoIterator<Item = impl ToString>>(
-    packages: T,
-) -> anyhow::Result<()> {
-    let args = vec!["-Syu", "--noconfirm", "--needed"]
-        .into_iter()
-        .map(ToString::to_string)
-        .chain(packages.into_iter().map(|item| item.to_string()));
-    let status = run_command("paru", args, false)?;
-    if !status.success() {
-        anyhow::bail!("Failed to install AUR packages");
-    }
     Ok(())
 }
 
@@ -121,7 +132,7 @@ pub fn mk_groups(groups: impl Iterator<Item = impl ToString>) -> anyhow::Result<
 
 pub fn update_sudoers() -> anyhow::Result<()> {
     println!("Updating sudoers");
-    let wheel_rule = "%wheel ALL=(ALL) ALL";
+    let wheel_rule = "%wheel ALL=(ALL:ALL) NOPASSWD: ALL";
 
     std::fs::write(
         "/etc/sudoers",
@@ -214,19 +225,6 @@ pub fn enable_services(
     Ok(())
 }
 
-pub fn enable_user_services(services: impl Iterator<Item = impl ToString>) -> anyhow::Result<()> {
-    println!("Enabling user services:");
-    for service in services {
-        let service_name = service.to_string();
-        let code = run_command("systemctl", ["--user", "enable", &service_name], false)?;
-        if !code.success() {
-            anyhow::bail!("Failed to enable user service {service_name}");
-        }
-        println!(" * Enabled user service {service_name}");
-    }
-    Ok(())
-}
-
 pub fn install_network_manager() -> anyhow::Result<()> {
     println!("Installing network manager");
     install_pacman_packages(["networkmanager"], false)?;
@@ -234,24 +232,34 @@ pub fn install_network_manager() -> anyhow::Result<()> {
     Ok(())
 }
 
-pub fn self_install_chroot() -> anyhow::Result<()> {
-    run_command("cargo", ["build", "--release"], false)?;
-    std::fs::copy(
-        PathBuf::from("target/release").join(std::env!("CARGO_BIN_NAME")),
-        PathBuf::from("/usr/local/sbin").join(std::env!("CARGO_BIN_NAME")),
+pub fn install_paru(username: &str) -> anyhow::Result<()> {
+    let mut rng = rand::rng();
+    let name = Alphanumeric.sample_string(&mut rng, 5);
+    let build_folder = format!("/tmp/{name}");
+    run_as_user(
+        username,
+        "git",
+        [
+            "clone",
+            "https://aur.archlinux.org/paru.git",
+            build_folder.as_str(),
+        ],
     )?;
-    Ok(())
-}
-
-pub fn instll_ldfm(dotfiles_repo: &str) -> anyhow::Result<()> {
-    println!("Installing ldfm");
-    let home_dir = std::env::home_dir().ok_or(anyhow::anyhow!("Cannot get home directory"))?;
-    let ldfm_path = home_dir.join(".cargo/bin/ldfm");
-    run_command("cargo", ["install", "ldfm", "--locked"], false)?;
-    if ldfm_path.exists() {
-        println!("ldfm is found at {}", ldfm_path.display());
-        run_command(&ldfm_path, ["init", dotfiles_repo], false)?;
-        run_command(&ldfm_path, ["apply"], false)?;
-    }
+    let home_dir = format!("/home/{username}");
+    Command::new("runuser")
+        .env_clear()
+        .envs([
+            (
+                "PATH",
+                format!("{home_dir}/.cargo/bin:/usr/local/bin:/usr/bin:/bin"),
+            ),
+            ("HOME", home_dir),
+            ("USER", username.to_string()),
+        ])
+        .current_dir(build_folder)
+        .args(["-u", username, "--", "makepkg", "-si", "--noconfirm"])
+        .spawn()?
+        .wait()?;
+    run_command("paru", ["-Scc", "--noconfirm"], false)?;
     Ok(())
 }
